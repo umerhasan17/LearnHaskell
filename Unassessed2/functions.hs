@@ -22,11 +22,11 @@ fib :: Int -> Int
 fib x
   | x == 0    = 0
   | x == 1    = 1
-  | otherwise = fib' 0 1 x 2 
+  | otherwise = fib' 0 1 2 x
 
 -- Question 15b 
 fib' :: Int -> Int -> Int -> Int -> Int
 -- Takes in first 2 fibonacci and target and current
-fib' fib1 fib2 target current
-  | target == current = fib2
-  | otherwise = fib1 + fib2
+fib' f1 f2 current target
+  | target == current = f2
+  | otherwise         = f1 + f2
