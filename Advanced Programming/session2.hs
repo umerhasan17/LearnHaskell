@@ -33,4 +33,15 @@ fib' n
   = fibTable !! (n - 1) + fibTable !! (n - 2)
 
 fibs''
-  = fibtable
+  = fibTable
+
+-- number of steps required to solve hanoi is 2^n - 1
+hanoi3 :: Int -> Int -> Int -> Int -> [(Int, Int)]
+-- from to via 
+hanoi3 0 f t v 
+  = []
+hanoi3 n f t v 
+  = hanoi3 (n - 1) f v t ++ 
+    [(f, t)] ++
+    hanoi3 (n - 1) v t f 
+  -- to is the via 
