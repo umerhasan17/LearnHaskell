@@ -16,6 +16,8 @@ fibs'
 -- this feels like a circular dependency
 -- however base cases in fib' solve this
 -- so the index in fibtable at position 0 and 1 exist
+-- cannot be done without lazy evaluation 
+-- however can be done with dynamic programming?
 
 fibTable :: [Int]
 fibTable
@@ -29,3 +31,6 @@ fib' 1
 -- instead index the fib table
 fib' n
   = fibTable !! (n - 1) + fibTable !! (n - 2)
+
+fibs''
+  = fibtable
