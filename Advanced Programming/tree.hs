@@ -80,11 +80,20 @@ labelWith f t
 -- Of course, reverse could be avoided by using a two-ended list (or queue)
 
 labelBF :: [Tree a] -> Int -> [Tree Int]
-labelBF [] n 
+labelBF [] _
   = []
+labelBF (Empty : ts) n
+  = Empty : labelBF ts n
+labelBF (Node l x r : ts) n
+  = Node l' n r' : reverse ts'
+  where 
+    (r' : l' : ts') = reverse (labelBF (ts ++ [l, r]) (n + 1))
 
-labelBF ts n
-  = replaceChildren ts (labelBF allChildren (n + k)) n
+labelBFL :: [Tree a] -> Int -> [Tree Int]
+labelBFL [] n 
+  = []
+labelBFL ts n
+  = replaceChildren ts (labelBFL allChildren (n + k)) n
   where 
     -- number of labels is not the length of list due to empty trees
     -- count the number of nodes in the forest
