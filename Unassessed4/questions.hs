@@ -29,5 +29,20 @@ limit f (x : y : ys)
   | f x y     = [x , y]
   | otherwise = (x : limit f (y : ys))
 
-
+-- why does this not compile
+-- map :: (a -> b) -> [a] -> [b]
+-- map f 
+--   = foldr g
+--   where
+--     g x ys = f x : ys
   
+repeatUntil :: (a -> Bool) -> (a -> a) -> a -> a 
+repeatUntil condition f x
+  | condition x = x
+  | otherwise   = repeatUntil condition f (f x)
+
+-- why is there no argument for x
+-- how is the return value being parsed with the dots and functions. 
+repeatUntil2 :: (a -> Bool) -> (a -> a) -> a -> a 
+repeatUntil2 p f
+  = head . filter p . iterate f
