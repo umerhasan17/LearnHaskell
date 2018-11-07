@@ -65,26 +65,45 @@ t2 = Node Black ( Node Black ( Leaf White )
 --------------------------------------------------------------------------
 
 size :: IntTree -> Int
-size (EmptyTree empty)
+size EmptyTree
   = 1
-size (InternalNode IntTree t1 Int IntTree t2)
+size (InternalNode t1 _ t2)
   = 13 + size t1 + size t2
 
 size' :: RadixTree -> Int 
-size'
-  = undefined
+size' (Leaf _) 
+  = 1
+size' (Node _ t1 t2)
+  = 9 + size' t1 + size' t2
+
+empty :: RadixTree
+empty
+  = Leaf Black
 
 binary :: Int -> BitString 
-binary
-  = undefined
+binary n
+  | n < 2     = [n]
+  | otherwise = binary (n `div` 2) ++ [n `mod` 2]
 
 insert :: BitString -> RadixTree -> RadixTree
-insert
-  = undefined
+insert [] (Leaf _)
+  = Leaf White
+insert [] (Node _ t t')
+  = Node White t t'
+insert bs (Leaf c)
+  = insert bs (Node c empty empty)
+insert (b : bs) (Node c t t')
+  | b == 0    = Node c (insert bs t) t'
+  | otherwise = Node c t (insert bs t')
 
-buildRadixTree :: [ Int ]-> RadixTree
-buildRadixTree
-  = undefined
+buildRadixTree :: [ Int ] -> RadixTree
+buildRadixTree []
+  = empty
+buildRadixTree (n : ns)
+  = insert (binary n) (buildRadixTree ns)
+
+-- same function by writing foldr (insert . binary) empty ns
+-- binary on n followed by insert. base case is empty. foldr does it on every n.
 
 member :: Int -> RadixTree -> Bool
 member
