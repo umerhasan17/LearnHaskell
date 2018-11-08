@@ -20,28 +20,28 @@ triangleArea a b c
     s = (a + b + c) / 2
 
 
-data Date = Day Month Year
+type Date = (Int, Int, Int)
 
-type Day = Int
+-- type Day = Int
 
-type Month = Int
+-- type Month = Int
 
-type Year = Int
+-- type Year = Int
 
--- age :: Date -> Date -> Int
--- age d1 d2
---   = d1.Year - d2.Year
+age :: Date -> Date -> Int
+age (d, m, y) (d', m', y')
+  = 
 
-flatten :: Tree a -> [a]
-flatten Empty
-  = []
-flatten (Node t1 x t2)
-  = flatten t1 ++ (x : flatten t2)
+-- flatten :: Tree a -> [a]
+-- flatten Empty
+--   = []
+-- flatten (Node t1 x t2)
+--   = flatten t1 ++ (x : flatten t2)
 
-data Tree = Leaf | Node Tree Tree
-          deriving (Eq, Show)
+-- data Tree = Leaf | Node Tree Tree
+--           deriving (Eq, Show)
 
-makeTrees :: Int -> [Tree]
-makeTrees n
-  | n == 0    = [Leaf]
-  | otherwise = 
+-- makeTrees :: Int -> [Tree]
+-- makeTrees n
+--   | n == 0    = [Leaf]
+--   | otherwise = 
