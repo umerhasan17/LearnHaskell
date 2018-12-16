@@ -4,13 +4,19 @@ data SuffixTree = Leaf Int | Node [(String, SuffixTree)]
 ------------------------------------------------------
 
 isPrefix :: String -> String -> Bool
-isPrefix 
-  = undefined
+isPrefix [] []
+  = True
+isPrefix [] (y : ys)
+  = True
+isPrefix (x : xs) []
+  = False
+isPrefix (x : xs) (y : ys)
+  = (x == y) && isPrefix xs ys
 
 removePrefix :: String -> String -> String
 removePrefix
 --Pre: s is a prefix of s'
-  = undefined
+  = 
 
 suffixes :: [a] -> [[a]]
 suffixes
