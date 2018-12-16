@@ -42,8 +42,19 @@ isSubstring s s'
       = isPrefix s x || isSubstring' s xs
 
 findSubstrings :: String -> String -> [Int]
-findSubstrings
-  = undefined
+findSubstrings s s'
+  = findSubstrings' s xs 0
+  where
+    xs = suffixes s'
+    findSubstrings' :: String -> [String] -> Int -> [Int]
+    findSubstrings' s [] index
+      = []
+    findSubstrings' s (x : xs) index
+      | isPrefix s x = index : recurse
+      | otherwise    = recurse
+      where
+        recurse = findSubstrings' s xs (index + 1)
+
 
 ------------------------------------------------------
 
