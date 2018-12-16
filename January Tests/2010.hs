@@ -31,8 +31,15 @@ suffixes xs
       = acc ++ [(x : xs)] ++ suffixes' xs acc
 
 isSubstring :: String -> String -> Bool
-isSubstring
-  = undefined
+isSubstring s s'
+  = isSubstring' s xs
+  where
+    xs = suffixes s'
+    isSubstring' :: String -> [String] -> Bool
+    isSubstring' s []
+      = False
+    isSubstring' s (x : xs)
+      = isPrefix s x || isSubstring' s xs
 
 findSubstrings :: String -> String -> [Int]
 findSubstrings
