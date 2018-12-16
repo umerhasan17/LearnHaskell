@@ -21,8 +21,14 @@ removePrefix (x : xs) (y: ys)
   = removePrefix xs ys
 
 suffixes :: [a] -> [[a]]
-suffixes
-  = undefined
+suffixes xs
+  = suffixes' xs []
+  where
+    suffixes' :: [a] -> [[a]] -> [[a]]
+    suffixes' [] acc
+      = acc
+    suffixes' (x : xs) acc
+      = acc ++ [(x : xs)] ++ suffixes' xs acc
 
 isSubstring :: String -> String -> Bool
 isSubstring
