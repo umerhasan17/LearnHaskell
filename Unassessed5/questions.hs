@@ -28,9 +28,9 @@ type Date = (Int, Int, Int)
 
 -- type Year = Int
 
-age :: Date -> Date -> Int
-age (d, m, y) (d', m', y')
-  = 
+-- age :: Date -> Date -> Int
+-- age (d, m, y) (d', m', y')
+--   = 
 
 -- flatten :: Tree a -> [a]
 -- flatten Empty
@@ -45,3 +45,8 @@ age (d, m, y) (d', m', y')
 -- makeTrees n
 --   | n == 0    = [Leaf]
 --   | otherwise = 
+
+data Tree a = Leaf a | Node (Tree a) (Tree a)
+            deriving (Show)
+
+-- build :: [a] -> Tree
