@@ -55,12 +55,21 @@ findSubstrings s s'
       where
         recurse = findSubstrings' s xs (index + 1)
 
-
 ------------------------------------------------------
 
 getIndices :: SuffixTree -> [Int]
-getIndices 
-  = undefined
+getIndices tree
+  = getIndices' [tree] []
+  where
+    getIndices' :: [SuffixTree] -> [Int] -> [Int]
+    getIndices' [] indices
+      = indices
+    getIndices' ((Leaf n) : xs) indices
+      = n : getIndices' xs indices ++ indices
+    getIndices' ((Node x) : xs) indices
+      = getIndices' trees indices ++ getIndices' xs indices ++ indices
+      where
+        trees = snd (unzip x)
 
 partition :: Eq a => [a] -> [a] -> ([a], [a], [a])
 partition 
