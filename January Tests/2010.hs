@@ -75,9 +75,25 @@ partition :: Eq a => [a] -> [a] -> ([a], [a], [a])
 partition 
   = undefined
 
+-- s is a prefix of label, then prefix of every suffix indexed in the leaves. Indices are located in reachable leaf nodes.
+-- label is a prefix of s, remove the prefix then continue search
+-- neither is a prefix of the other, go to the next subtree if there is
 findSubstrings' :: String -> SuffixTree -> [Int]
-findSubstrings'
-  = undefined
+findSubstrings' s tree
+  = findSubstrings'' s tree []
+  where
+  findSubstrings'' :: String -> SuffixTree -> [Int] -> [Int]
+  findSubstrings'' s (Leaf n) indices
+    | s == ""   = n : indices
+    | otherwise = indices
+  findSubstrings'' s (Node []) indices
+    = indices
+  findSubstrings'' s (Node (x : xs)) indices
+    | isPrefix s label = findSubstrings' s tree
+    | isPrefix label s = findSubstrings' (removePrefix label s) tree
+    | otherwise        = findSubstrings' s (Node xs)
+    where
+      (label, tree) = x
 
 ------------------------------------------------------
 
