@@ -89,7 +89,7 @@ findSubstrings' s tree
   findSubstrings'' s (Node []) indices
     = indices
   findSubstrings'' s (Node (x : xs)) indices
-    | isPrefix s label = findSubstrings' s tree
+    | isPrefix s label = getIndices tree
     | isPrefix label s = findSubstrings' (removePrefix label s) tree
     | otherwise        = findSubstrings' s (Node xs)
     where
