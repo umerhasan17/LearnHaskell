@@ -72,8 +72,17 @@ getIndices tree
         trees = snd (unzip x)
 
 partition :: Eq a => [a] -> [a] -> ([a], [a], [a])
-partition 
-  = undefined
+partition s1 s2
+  = partition' s1 s2 0
+  where
+    partition' :: Eq a => [a] -> [a] -> Int -> ([a], [a], [a])
+    partition' s1 s2 index
+      | s1!!index == s2!!index = partition' s1 s2 (index + 1)
+      | otherwise              = (prefix, s1', s2')
+      where
+        prefix = take index s1
+        s1'    = drop index s1
+        s2'    = drop index s2
 
 -- s is a prefix of label, then prefix of every suffix indexed in the leaves. Indices are located in reachable leaf nodes.
 -- label is a prefix of s, remove the prefix then continue search
