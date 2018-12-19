@@ -77,8 +77,8 @@ partition s1 s2
   where
     partition' :: Eq a => [a] -> [a] -> Int -> ([a], [a], [a])
     partition' s1 s2 index
-      | s1!!index == s2!!index = partition' s1 s2 (index + 1)
-      | otherwise              = (prefix, s1', s2')
+      | index < length s1 && index < length s2 && s1!!index == s2!!index = partition' s1 s2 (index + 1)
+      | otherwise                                                        = (prefix, s1', s2')
       where
         prefix = take index s1
         s1'    = drop index s1
@@ -98,11 +98,12 @@ findSubstrings' s tree
   findSubstrings'' s (Node []) indices
     = indices
   findSubstrings'' s (Node (x : xs)) indices
-    | isPrefix s label = getIndices tree
-    | isPrefix label s = findSubstrings' (removePrefix label s) tree
-    | otherwise        = findSubstrings' s (Node xs)
+    | isPrefix s label  = getIndices tree
+    | length prefix > 0 = findSubstrings' s' tree
+    | otherwise         = findSubstrings' s (Node xs)
     where
       (label, tree) = x
+      (prefix, s', label') = partition s label
 
 ------------------------------------------------------
 
