@@ -18,12 +18,25 @@ type BDD = (NodeId, [BDDNode])
 
 -- Pre: The item is in the given table
 lookUp :: Eq a => a -> [(a, b)] -> b
-lookUp 
-  = undefined
+lookUp k t
+  = [value | (key, value) <- t, k == key] !! 0
 
 checkSat :: BDD -> Env -> Bool
-checkSat 
-  = undefined
+checkSat b e
+  = checkSat' b e
+  where
+    checkSat' :: BDD -> Env -> Bool
+    checkSat' (id, ns) e
+      | value == True && r == 0  = False
+      | value == True && r == 1  = True
+      | value == False && l == 0 = False
+      | value == False && l == 1 = True
+      | value == True            = checkSat' (r, ns) e
+      | otherwise                = checkSat' (l, ns) e
+      where
+        (i, l, r) = lookUp id ns
+        value     = lookUp i e
+    
 
 sat :: BDD -> [[(Index, Bool)]]
 sat 

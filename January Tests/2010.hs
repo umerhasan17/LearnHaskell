@@ -1,3 +1,5 @@
+-- TODO part 4
+
 data SuffixTree = Leaf Int | Node [(String, SuffixTree)] 
                 deriving (Eq, Show)
 
