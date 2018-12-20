@@ -102,14 +102,27 @@ findSubstrings' s tree
     | length prefix > 0 = findSubstrings' s' tree
     | otherwise         = findSubstrings' s (Node xs)
     where
-      (label, tree) = x
+      (label, tree)        = x
       (prefix, s', label') = partition s label
 
 ------------------------------------------------------
 
 insert :: (String, Int) -> SuffixTree -> SuffixTree
-insert 
+insert (s, index) (Leaf n)
   = undefined
+insert (s, index) (Node []) 
+  = (Node [(s, (Leaf index))])
+insert (s, index) (Node (x : xs)) 
+  | prefix == label    = (Node ((label, insert (s', index) tree') : xs))
+  | length prefix > 0  = (Node (x' : xs))
+  | otherwise          = (Node (x : xs'))
+  where
+    (label, tree')       = x
+    (prefix, s', label') = partition s label
+    subtrees             = (Node [(s', (Leaf index)), (label', tree')])
+    x'                   = (prefix, subtrees)
+    (Node xs')           = (insert (s, index) (Node xs))
+      
 
 -- This function is given
 buildTree :: String -> SuffixTree 
