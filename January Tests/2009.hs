@@ -22,18 +22,14 @@ lookUp k t
   = [value | (key, value) <- t, k == key] !! 0
 
 checkSat :: BDD -> Env -> Bool
-checkSat b e
-  = checkSat' b e
+checkSat (id, ns) e
+  | id == 0 = False
+  | id == 1 = True
+  | value               = checkSat (r, ns) e
+  | otherwise           = checkSat (l, ns) e
   where
-    checkSat' :: BDD -> Env -> Bool
-    checkSat' (id, ns) e
-      | id == 0 = False
-      | id == 1 = True
-      | value               = checkSat' (r, ns) e
-      | otherwise           = checkSat' (l, ns) e
-      where
-        (i, l, r) = lookUp id ns
-        value     = lookUp i e
+    (i, l, r) = lookUp id ns
+    value     = lookUp i e
     
 
 sat :: BDD -> [[(Index, Bool)]]
