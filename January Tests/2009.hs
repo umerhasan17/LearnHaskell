@@ -27,20 +27,28 @@ checkSat b e
   where
     checkSat' :: BDD -> Env -> Bool
     checkSat' (id, ns) e
-      | value == True && r == 0  = False
-      | value == True && r == 1  = True
-      | value == False && l == 0 = False
-      | value == False && l == 1 = True
-      | value == True            = checkSat' (r, ns) e
-      | otherwise                = checkSat' (l, ns) e
+      | id == 0 = False
+      | id == 1 = True
+      | value               = checkSat' (r, ns) e
+      | otherwise           = checkSat' (l, ns) e
       where
         (i, l, r) = lookUp id ns
         value     = lookUp i e
     
 
 sat :: BDD -> [[(Index, Bool)]]
-sat 
+sat b
   = undefined
+  -- = sat' b
+  -- where
+  --   sat' :: BDD -> [[(Index, Bool)]]
+  --   sat' (id, ns)
+  --     |
+  --     |
+  --     | 
+  --     | 
+  --   where
+  --     (i, l, r) = lookUp id ns
 
 ------------------------------------------------------
 -- PART II
