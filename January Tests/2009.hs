@@ -48,8 +48,6 @@ sat b
 ------------------------------------------------------
 -- PART II
 
--- data BExp = Prim Bool | IdRef Index | Not BExp | And BExp BExp | Or BExp BExp
-
 simplify :: BExp -> BExp
 simplify (Not (Prim b))
   = (Prim (not b))
@@ -60,9 +58,25 @@ simplify (Or (Prim b) (Prim b'))
 simplify exp
   = exp
 
+-- replace the index with the boolean 
+-- simplify 
+-- restrict again 
+
 restrict :: BExp -> Index -> Bool -> BExp
-restrict 
-  = undefined
+restrict (IdRef i) index b
+  | i == index = (Prim b)
+  | otherwise  = (IdRef i)
+restrict (Not exp) index b
+  = simplify (restrict exp index b)
+restrict (And exp exp') index b
+  = simplify (And (restrict exp index b) (restrict exp' index b))
+restrict (Or exp exp') index b
+  = simplify (Or (restrict exp index b) (restrict exp' index b))
+restrict exp index b
+  | exp == exp' = exp
+  | otherwise   = restrict exp' index b
+  where
+    exp' = restrict exp index b
 
 ------------------------------------------------------
 -- PART III
