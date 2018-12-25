@@ -67,16 +67,13 @@ restrict (IdRef i) index b
   | i == index = (Prim b)
   | otherwise  = (IdRef i)
 restrict (Not exp) index b
-  = simplify (restrict exp index b)
+  = simplify (Not (restrict exp index b))
 restrict (And exp exp') index b
   = simplify (And (restrict exp index b) (restrict exp' index b))
 restrict (Or exp exp') index b
   = simplify (Or (restrict exp index b) (restrict exp' index b))
-restrict exp index b
-  | exp == exp' = exp
-  | otherwise   = restrict exp' index b
-  where
-    exp' = restrict exp index b
+restrict exp _ _
+  = exp
 
 ------------------------------------------------------
 -- PART III
