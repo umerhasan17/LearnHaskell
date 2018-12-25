@@ -23,14 +23,13 @@ lookUp k t
 
 checkSat :: BDD -> Env -> Bool
 checkSat (id, ns) e
-  | id == 0 = False
-  | id == 1 = True
-  | value               = checkSat (r, ns) e
-  | otherwise           = checkSat (l, ns) e
+  | id == 0    = False
+  | id == 1    = True
+  | value      = checkSat (r, ns) e
+  | otherwise  = checkSat (l, ns) e
   where
     (i, l, r) = lookUp id ns
     value     = lookUp i e
-    
 
 sat :: BDD -> [[(Index, Bool)]]
 sat b
@@ -39,8 +38,8 @@ sat b
   -- where
   --   sat' :: BDD -> [[(Index, Bool)]]
   --   sat' (id, ns)
-  --     |
-  --     |
+  --     | i == 0 = []
+  --     | i == 1 = [[]]
   --     | 
   --     | 
   --   where
@@ -49,9 +48,17 @@ sat b
 ------------------------------------------------------
 -- PART II
 
+-- data BExp = Prim Bool | IdRef Index | Not BExp | And BExp BExp | Or BExp BExp
+
 simplify :: BExp -> BExp
-simplify 
-  = undefined
+simplify (Not (Prim b))
+  = (Prim (not b))
+simplify (And (Prim b) (Prim b'))
+  = (Prim (b && b'))
+simplify (Or (Prim b) (Prim b'))
+  = (Prim (b || b'))
+simplify exp
+  = exp
 
 restrict :: BExp -> Index -> Bool -> BExp
 restrict 
