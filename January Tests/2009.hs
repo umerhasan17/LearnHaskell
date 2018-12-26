@@ -84,14 +84,28 @@ restrict exp _ _
 -- but you are free to implement the function differently if you wish.
 buildBDD :: BExp -> [Index] -> BDD
 buildBDD 
-  = undefined
+  =  buildBDD’ e 2 xs
 
 -- Potential helper function for buildBDD which you are free
 -- to define/modify/ignore/delete/embed as you see fit.
 buildBDD' :: BExp -> NodeId -> [Index] -> BDD
-buildBDD' 
-  = undefined
+buildBDD' e i (x : y : ys)
+  | x > y     = buildBDD' e (2 * i + 1) (y : ys)
+  | otherwise = (id2, ()  : nodes2)
+  where
+    (id1, nodes1) = buildBDD' e (2 * i + 1) (y : ys)
+    (id2, nodes2) = buildBDD' e (2 * i) (y : ys)
+buildBDD' e i (x : xs)
+  = 
+buildBDD' e i []
+  | e' == (Prim True) = (1, [])
+  | otherwise         = (0, [])
+  where
+    e' = restrict e i 
 
+
+-- 
+-- 
 ------------------------------------------------------
 -- PART IV
 
