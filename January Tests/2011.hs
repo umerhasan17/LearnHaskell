@@ -1,3 +1,5 @@
+-- Polymorphic Type Inference, will be live coded
+
 import Data.Maybe
 
 data Expr = Number Int |

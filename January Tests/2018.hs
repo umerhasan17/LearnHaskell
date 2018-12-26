@@ -1,3 +1,5 @@
+-- Constant Propogation, will be live coded
+
 import Data.Maybe
 import Data.List
 

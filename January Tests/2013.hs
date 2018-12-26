@@ -1,3 +1,5 @@
+-- Binomial Heaps, easiest test so far
+
 type BinHeap a = [BinTree a]
 
 data BinTree a = Node a Int (BinHeap a)
