@@ -43,8 +43,20 @@ extractMin (x : xs)
       = min
 
 mergeHeaps :: Ord a => BinHeap a -> BinHeap a -> BinHeap a
-mergeHeaps 
-  = undefined
+mergeHeaps [] h
+  = h
+mergeHeaps h []
+  = h
+mergeHeaps h1 h2
+  | r1 < r2   = (t1 : mergeHeaps ts1 h2)
+  | r2 > r1   = (t2 : mergeHeaps ts2 h1)
+  | otherwise = mergeHeaps [combined] (mergeHeaps ts1 ts2)
+  where
+    (t1 : ts1)      = h1
+    (t2 : ts2)      = h2
+    (Node v1 r1 c1) = t1
+    (Node v2 r2 c2) = t2
+    combined        = combineTrees t1 t2
 
 insert :: Ord a => a -> BinHeap a -> BinHeap a
 insert 
