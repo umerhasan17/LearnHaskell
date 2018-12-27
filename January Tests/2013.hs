@@ -29,8 +29,18 @@ combineTrees t1@(Node v1 r1 c1) t2@(Node v2 r2 c2)
 -- PART II
 
 extractMin :: Ord a => BinHeap a -> a
-extractMin 
-  = undefined
+extractMin (x : xs)
+  = extractMin' (x : xs) v
+  where
+    (Node v _ _) = x
+    extractMin' :: Ord a => BinHeap a -> a -> a
+    extractMin' (x : xs) min
+      | v1 < min  = extractMin' xs v1
+      | otherwise = extractMin' xs min
+      where
+        (Node v1 _ _) = x
+    extractMin' [] min
+      = min
 
 mergeHeaps :: Ord a => BinHeap a -> BinHeap a -> BinHeap a
 mergeHeaps 
