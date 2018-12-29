@@ -50,13 +50,14 @@ mergeHeaps h []
 mergeHeaps h1 h2
   | r1 < r2   = (t1 : mergeHeaps ts1 h2)
   | r2 < r1   = (t2 : mergeHeaps h1 ts2)
-  | otherwise = mergeHeaps [combined] (mergeHeaps ts1 ts2)
+  | otherwise = mergeHeaps combined merged
   where
     (t1 : ts1)      = h1
     (t2 : ts2)      = h2
     (Node v1 r1 c1) = t1
     (Node v2 r2 c2) = t2
-    combined        = combineTrees t1 t2
+    combined        = [combineTrees t1 t2]
+    merged          = mergeHeaps ts1 ts2
 
 insert :: Ord a => a -> BinHeap a -> BinHeap a
 insert v h
@@ -80,8 +81,23 @@ removeMin
   = undefined
 
 binSort :: Ord a => [a] -> [a]
-binSort 
-  = undefined
+binSort xs
+  = toList (toHeap xs [])
+  where
+    toHeap :: Ord a => [a] -> BinHeap a -> BinHeap a
+    toHeap [] h
+      = h
+    toHeap (x : xs) h
+      = (insert x h) ++ toHeap xs h
+    toList :: Ord a => BinHeap a -> [a]
+    toList []
+      = []
+    toList h
+      = (min : toList h')
+      where
+        min = extractMin h
+        h'  = deleteMin h
+
 
 --------------------------------------------------------------
 -- PART III
