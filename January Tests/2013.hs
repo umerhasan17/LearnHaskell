@@ -22,8 +22,8 @@ children (Node _ _ children)
 
 combineTrees :: Ord a => BinTree a -> BinTree a -> BinTree a
 combineTrees t1@(Node v1 r1 c1) t2@(Node v2 r2 c2)
-  | v1 < v2   = (Node v1 r1 (t2 : c1))
-  | otherwise = (Node v2 r2 (t1 : c2))
+  | v1 < v2   = (Node v1 (r1 + 1) (t2 : c1))
+  | otherwise = (Node v2 (r2 + 1) (t1 : c2))
 
 --------------------------------------------------------------
 -- PART II
