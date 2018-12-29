@@ -49,7 +49,7 @@ mergeHeaps h []
   = h
 mergeHeaps h1 h2
   | r1 < r2   = (t1 : mergeHeaps ts1 h2)
-  | r2 > r1   = (t2 : mergeHeaps ts2 h1)
+  | r2 < r1   = (t2 : mergeHeaps h1 ts2)
   | otherwise = mergeHeaps [combined] (mergeHeaps ts1 ts2)
   where
     (t1 : ts1)      = h1
@@ -59,12 +59,17 @@ mergeHeaps h1 h2
     combined        = combineTrees t1 t2
 
 insert :: Ord a => a -> BinHeap a -> BinHeap a
-insert 
-  = undefined
+insert v h
+  = mergeHeaps [(Node v 0 [])] h
 
 deleteMin :: Ord a => BinHeap a -> BinHeap a
-deleteMin 
-  = undefined
+deleteMin h
+  | min == v1 = mergeHeaps (reverse c1) ts1
+  | otherwise = deleteMin ts1
+  where
+    min = extractMin h
+    (t1 : ts1) = h
+    (Node v1 r1 c1) = t1
 
 remove :: Eq a => a -> BinHeap a -> BinHeap a
 remove
