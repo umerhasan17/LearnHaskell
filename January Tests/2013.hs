@@ -63,22 +63,35 @@ insert :: Ord a => a -> BinHeap a -> BinHeap a
 insert v h
   = mergeHeaps [(Node v 0 [])] h
 
+-- find the smallest root tree  
+-- this line works: mergeHeaps [Node 4 0 []]  (reverse (children (h6 !! 1)))
+-- why doesn't the code?
 deleteMin :: Ord a => BinHeap a -> BinHeap a
 deleteMin h
-  | min == v1 = mergeHeaps (reverse c1) ts1
-  | otherwise = (t1 : deleteMin ts1)
+  | min == v  = mergeHeaps remaining (reverse c)
+  | otherwise = deleteMin ts
   where
-    min             = extractMin h
-    (t1 : ts1)      = h
-    (Node v1 r1 c1) = t1
+    min          = extractMin h
+    (t : ts)     = h
+    (Node v r c) = t
+    remaining    = remove min h
 
 remove :: Eq a => a -> BinHeap a -> BinHeap a
-remove
-  = undefined
+remove _ []
+  = []
+remove v (x : xs)
+  | value x == v = xs
+  | otherwise    = (x : remove v xs)
 
-removeMin :: Ord a => BinHeap a -> (BinTree a, BinHeap a)
-removeMin
-  = undefined
+-- removeMin :: Ord a => BinHeap a -> (BinTree a, BinHeap a)
+-- removeMin []
+--   = undefined
+-- removeMin h
+--   | 
+--   |
+--   where
+--     (t : ts)      = h
+--     (Node v r c ) = t
 
 binSort :: Ord a => [a] -> [a]
 binSort xs
