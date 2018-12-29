@@ -66,10 +66,10 @@ insert v h
 deleteMin :: Ord a => BinHeap a -> BinHeap a
 deleteMin h
   | min == v1 = mergeHeaps (reverse c1) ts1
-  | otherwise = deleteMin ts1
+  | otherwise = (t1 : deleteMin ts1)
   where
-    min = extractMin h
-    (t1 : ts1) = h
+    min             = extractMin h
+    (t1 : ts1)      = h
     (Node v1 r1 c1) = t1
 
 remove :: Eq a => a -> BinHeap a -> BinHeap a
