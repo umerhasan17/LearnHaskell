@@ -49,8 +49,8 @@ skipSpace :: String -> String
 skipSpace []
   = []
 skipSpace (x : xs)
-  | isAlphaNum x = (x : xs)
-  | otherwise    = skipSpace xs
+  | isAlphaNum x || isSymbol x || isPunctuation x = (x : xs)
+  | otherwise                                     = skipSpace xs
 
 getAttribute :: String -> XML -> String
 getAttribute attr (Element _ attrs _)
@@ -137,7 +137,7 @@ parseAttributes xs
     xs'          = skipSpace xs
     (n, rest)    = parseName xs'
     (a, rest')   = getNextAttribute (skipSpace rest)
-    (as, rest'') = parseAttributes rest'
+    (as, rest'') = parseAttributes (skipSpace rest')
 
 getRestOfText :: String -> String
 getRestOfText (x : xs)
