@@ -46,16 +46,27 @@ printXMLs
 -- Part I
 
 skipSpace :: String -> String
-skipSpace
-  = undefined
+skipSpace []
+  = []
+skipSpace (x : xs)
+  | isLetter x = (x : xs)
+  | otherwise  = skipSpace xs
 
 getAttribute :: String -> XML -> String
-getAttribute 
-  = undefined
+getAttribute attr (Element _ attrs _)
+  = [s | (n, s) <- attrs, attr == n] !! 0
+getAttribute _ _
+  = []
 
 getChildren :: String -> XML -> [XML]
-getChildren 
-  = undefined
+getChildren name (Element name' attrs (c : cs))
+  | name == name'' = c : getChildren name x'
+  | otherwise     = getChildren name x'
+  where
+    (Element name'' _ _) = c
+    x' = (Element name' attrs cs)
+getChildren _ _
+  = []
 
 getChild :: String -> XML -> XML
 getChild 
