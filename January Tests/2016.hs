@@ -49,8 +49,8 @@ skipSpace :: String -> String
 skipSpace []
   = []
 skipSpace (x : xs)
-  | isLetter x = (x : xs)
-  | otherwise  = skipSpace xs
+  | isAlphaNum x = (x : xs)
+  | otherwise    = skipSpace xs
 
 getAttribute :: String -> XML -> String
 getAttribute attr (Element _ attrs _)
