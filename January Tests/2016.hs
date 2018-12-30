@@ -61,21 +61,24 @@ getAttribute _ _
 getChildren :: String -> XML -> [XML]
 getChildren name (Element name' attrs (c : cs))
   | name == name'' = c : getChildren name x'
-  | otherwise     = getChildren name x'
+  | otherwise      = getChildren name x'
   where
     (Element name'' _ _) = c
-    x' = (Element name' attrs cs)
+    x'                   = (Element name' attrs cs)
 getChildren _ _
   = []
 
 getChild :: String -> XML -> XML
-getChild 
-  = undefined
+getChild name x
+  | cs == []  = (Text "")
+  | otherwise = cs !! 0
+  where
+    cs = getChildren name x
 
 addChild :: XML -> XML -> XML
 -- Pre: the second argument is an Element
-addChild 
-  = undefined
+addChild c (Element n a cs)
+  = (Element n a (cs ++ [c]))
 
 getValue :: XML -> XML
 getValue 
