@@ -164,18 +164,24 @@ parse s
   = parse' (skipSpace s) [sentinel]
 
 parse' :: String -> Stack -> XML
-parse' s xs
-  | s' == [] = getChild (head xs)
-  | s' == ('<' : '/' : s'') = parse' rest (popAndAdd xs)
-  | s' == ('<' : s''') = parse' rest'' xs'
-  | otherwise = parse' rest''' (addText text xs) 
+parse' [] xs
+  = cs !! 0
   where
-    s' = skipSpace s
-    (n, rest) = parseName s''
-    (n', rest') = parseName s'''
-    (as, rest'') = parseAttributes rest'
-    xs' = (Element n' as []) : xs
-    (text, rest''') = readTillBracket s'
+    (Element _ _ cs) = head xs
+parse' ('<' : '/' : s) xs 
+  = parse' rest (popAndAdd xs)
+  where
+    (n, rest) = parseName s
+parse' ('<' : s) xs
+  = parse' rest' xs'
+  where
+    (n, rest) = parseName s
+    (as, rest') = parseAttributes rest'
+    xs' = (Element n as []) : xs
+parse' s xs
+  = parse' rest (addText text xs) 
+  where
+    (text, rest) = readTillBracket s
 
 readTillBracket :: String -> (String, String)
 readTillBracket xs@('<' : xs')
