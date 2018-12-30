@@ -81,8 +81,19 @@ addChild c (Element n a cs)
   = (Element n a (cs ++ [c]))
 
 getValue :: XML -> XML
-getValue 
-  = undefined
+getValue (Element n a cs)
+  = (Text (getValues cs))
+getValue x
+  = x
+
+getValues :: [XML] -> String
+getValues (x : xs)
+  = v ++ vs
+  where
+  (Text v) = getValue x
+  vs       = getValues xs
+getValues []
+  = []
 
 -------------------------------------------------------------------------
 -- Part II
