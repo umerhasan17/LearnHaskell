@@ -129,9 +129,35 @@ popAndAdd (x : y : ys)
 
 parseAttributes :: String -> (Attributes, String)
 -- Pre: The XML attributes string is well-formed
-parseAttributes 
-  = undefined
+parseAttributes ('>' : xs)
+  = ([], xs)
+parseAttributes xs
+  = (((n, a) : as) , rest'')
+  where
+    xs'          = skipSpace xs
+    (n, rest)    = parseName xs'
+    (a, rest')   = getNextAttribute (skipSpace rest)
+    (as, rest'') = parseAttributes rest'
 
+getRestOfText :: String -> String
+getRestOfText (x : xs)
+  | x == '>'  = xs
+  | otherwise = getRestOfText xs
+
+getNextAttribute :: String -> (String, String)
+getNextAttribute ('\"' : xs)
+  = getNextAttribute' xs
+getNextAttribute (x : xs)
+  = getNextAttribute xs
+
+getNextAttribute' :: String -> (String, String)
+getNextAttribute' ('\"' : xs)
+  = ([], xs)
+getNextAttribute' (x : xs)
+  = (x : a, rest)
+  where
+    (a, rest) = getNextAttribute' xs
+  
 parse :: String -> XML
 -- Pre: The XML string is well-formed
 parse s
