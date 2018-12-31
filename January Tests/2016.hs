@@ -176,7 +176,7 @@ parse' ('<' : s) xs
   = parse' rest' xs'
   where
     (n, rest) = parseName s
-    (as, rest') = parseAttributes rest'
+    (as, rest') = parseAttributes rest
     xs' = (Element n as []) : xs
 parse' s xs
   = parse' rest (addText text xs) 
@@ -186,12 +186,12 @@ parse' s xs
 readTillBracket :: String -> (String, String)
 readTillBracket xs@('<' : xs')
   = ([], xs)
-readTillBracket (x : xs)
-  = ((x : fst next), snd next)
+readTillBracket s
+  | skipSpace s == [] = ([], [])
+  | otherwise = ((x : fst next), snd next)
   where
     next = readTillBracket xs
-
-
+    (x : xs) = skipSpace s
 -------------------------------------------------------------------------
 -- Part III
 
