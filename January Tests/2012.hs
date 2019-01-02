@@ -126,14 +126,22 @@ visit s xs ts
       = []
     visit' (y : ys) xs ts
       = (visit y xs ts) ++ (visit' ys xs ts)
-      
 
 ------------------------------------------------------
 -- PART IV
 
 compose :: LTS -> LTS -> LTS
-compose 
-  = undefined
+compose lts1 lts2
+  = cs
+  where
+    a1 = alphabet lts1
+    a2 = alphabet lts2
+    s1 = states lts1
+    s2 = states lts2
+    ps = [(x, y) | x <- s1, y <- s2]
+    ts = [(t1, t2) | (s1, s2) <- ps, t1 <- transitions s1 lts1, t2 <- transitions s2 lts2]
+    cs = [ts' | (t1, t2) <- ts, ts' <- composeTransitions t1 t2 a1 a2 []]
+    
 
 ------------------------------------------------------
 -- PART V
