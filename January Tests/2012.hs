@@ -24,7 +24,8 @@ type StateMap = [((State, State), State)]
 lookUp :: Eq a => a -> [(a, b)] -> b
 --Pre: The item is in the table
 lookUp x xs
-  = head [v | (i, v) <- xs, x == i]
+  -- = head [v | (i, v) <- xs, x == i]
+  = fromJust (lookup x xs)
 
 states :: LTS -> [State]
 states lts
@@ -41,21 +42,20 @@ transitions s lts
   = [t | t <- lts, fst(fst(t)) == s]
 
 alphabet :: LTS -> Alphabet
-alphabet lts
-  = nub [a | ((s, t), a) <- lts]
+alphabet
+  -- = nub [a | ((s, t), a) <- lts]
+  = nub . map snd 
 
 ------------------------------------------------------
 -- PART II
 
 actions :: Process -> [Id]
-actions STOP
-  = []
-actions (Ref _)
-  = []
 actions (Prefix id p)
   = id : actions p
 actions (Choice ps)
   = concatMap actions ps
+actions _
+  = []
 
 accepts :: [Id] -> [ProcessDef] -> Bool
 --Pre: The first item in the list of process definitions is
@@ -109,9 +109,22 @@ composeTransitions ((s, t), id1) ((s', t'), id2) a1 a2 m
     i3      = lookUp (s, t') m
     i4      = lookUp (t, t') m
 
+-- pruneTransitions :: [Transition] -> LTS
+-- pruneTransitions ts
+--   = nub (visit 0 [])
+--     where
+--       visit :: State -> [State] -> [Transition]
+--       visit s ss
+--         | s `elem` ss = []
+--         | otherwise   = ts' ++ concatMap (flip visit (s : ss)) ss'
+--         where
+--           ts' = transitions s ts
+--           ss' = map (snd . fst) ts'
+    
+
 pruneTransitions :: [Transition] -> LTS
 pruneTransitions ts
-  = visit 0 [] ts
+  = nub (visit 0 [] ts)
 
 visit :: State -> [State] -> [Transition] -> LTS
 visit s xs ts
@@ -132,15 +145,21 @@ visit s xs ts
 
 compose :: LTS -> LTS -> LTS
 compose lts1 lts2
-  = cs
+  = (pruneTransitions . concat) cs
   where
     a1 = alphabet lts1
     a2 = alphabet lts2
     s1 = states lts1
     s2 = states lts2
+    sentinels1 = map (\s -> ((s, 0), "$1"))
+    sentinels2 = map (\s -> ((s, 0), "$2"))
     ps = [(x, y) | x <- s1, y <- s2]
-    ts = [(t1, t2) | (s1, s2) <- ps, t1 <- transitions s1 lts1, t2 <- transitions s2 lts2]
-    cs = [ts' | (t1, t2) <- ts, ts' <- composeTransitions t1 t2 a1 a2 []]
+    -- ts = [(t1, t2) | (s1, s2) <- ps, t1 <- transitions s1 lts1, t2 <- transitions s2 lts2]
+    cs = [composeTransitions t1 t2 a1 a2 (getStateMap s1 s2) | t1 <- lts1 ++ sentinels1 s1, t2 <- lts2 ++ sentinels2 s2]
+
+getStateMap :: [State] -> [State] -> StateMap
+getStateMap ss1 ss2 
+  = zip [(s1, s2) | s1 <- ss1, s2 <- ss2] [0..length ss1 * length ss2 - 1]
 
 ------------------------------------------------------
 -- PART V
