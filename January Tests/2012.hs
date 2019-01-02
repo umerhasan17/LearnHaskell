@@ -60,8 +60,29 @@ actions (Choice ps)
 accepts :: [Id] -> [ProcessDef] -> Bool
 --Pre: The first item in the list of process definitions is
 --     that of the start process.
-accepts 
-  = undefined
+accepts ts ps
+  = accepts' ts (snd (head ps)) ps
+  where
+    accepts' :: [Id] -> Process -> [ProcessDef] -> Bool
+    accepts' [] _ _
+      = True
+    accepts' (t : ts) (STOP) ps
+      = False
+    accepts' (t : ts) (Ref id) ps
+      = accepts' (t : ts) p ps
+      where
+        p = lookUp id ps
+    accepts' (t : ts) (Prefix id p) ps
+      = (t == id) && accepts' ts p ps
+    accepts' (t : ts) (Choice ps') ps
+      = or (accepts'' (t : ts) ps' ps)
+      where
+        accepts'' :: [Id] -> [Process] -> [ProcessDef] -> [Bool]
+        accepts'' ts [] ps
+          = [True]
+        accepts'' ts (p : ps') ps
+          = (accepts' ts p ps) : (accepts'' ts ps' ps)
+
 
 ------------------------------------------------------
 -- PART III
