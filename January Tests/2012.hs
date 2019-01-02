@@ -23,20 +23,26 @@ type StateMap = [((State, State), State)]
 
 lookUp :: Eq a => a -> [(a, b)] -> b
 --Pre: The item is in the table
-lookUp
-  = undefined
+lookUp x xs
+  = head [v | (i, v) <- xs, x == i]
 
 states :: LTS -> [State]
-states
-  = undefined
-
+states lts
+  = nub (states' lts [])
+  where
+    states' :: LTS -> [State] -> [State]
+    states' [] states
+      = states
+    states' (((s1, s2), id) : xs) states
+      = (s1 : s2 : states) ++ states' xs states
+      
 transitions :: State -> LTS -> [Transition]
-transitions
-  = undefined
+transitions s lts
+  = [t | t <- lts, fst(fst(t)) == s]
 
 alphabet :: LTS -> Alphabet
-alphabet 
-  = undefined
+alphabet lts
+  = nub [a | ((s1, s2), a) <- lts]
 
 ------------------------------------------------------
 -- PART II
