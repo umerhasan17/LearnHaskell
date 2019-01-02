@@ -48,8 +48,14 @@ alphabet lts
 -- PART II
 
 actions :: Process -> [Id]
-actions
-  = undefined
+actions STOP
+  = []
+actions (Ref _)
+  = []
+actions (Prefix id p)
+  = id : actions p
+actions (Choice ps)
+  = concatMap actions ps
 
 accepts :: [Id] -> [ProcessDef] -> Bool
 --Pre: The first item in the list of process definitions is
