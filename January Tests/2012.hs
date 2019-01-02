@@ -33,8 +33,8 @@ states lts
     states' :: LTS -> [State] -> [State]
     states' [] states
       = states
-    states' (((s1, s2), id) : xs) states
-      = (s1 : s2 : states) ++ states' xs states
+    states' (((s, t), id) : xs) states
+      = (s : t : states) ++ states' xs states
       
 transitions :: State -> LTS -> [Transition]
 transitions s lts
@@ -42,7 +42,7 @@ transitions s lts
 
 alphabet :: LTS -> Alphabet
 alphabet lts
-  = nub [a | ((s1, s2), a) <- lts]
+  = nub [a | ((s, t), a) <- lts]
 
 ------------------------------------------------------
 -- PART II
@@ -83,20 +83,31 @@ accepts ts ps
         accepts'' ts (p : ps') ps
           = (accepts' ts p ps) : (accepts'' ts ps' ps)
 
-
 ------------------------------------------------------
 -- PART III
 
---composeTransitions :: Transition -> Transition 
---                   -> Alphabet -> Alphabet 
---                   -> StateMap 
---                   -> [Transition]
+composeTransitions :: Transition -> Transition 
+                  -> Alphabet -> Alphabet 
+                  -> StateMap 
+                  -> [Transition]
 --Pre: The first alphabet is that of the LTS from which the first transition is
 --     drawn; likewise the second.
 --Pre: All (four) pairs of source and target states drawn from the two transitions
 --     are contained in the given StateMap.
-composeTransitions
-  = undefined
+composeTransitions ((s, t), id1) ((s', t'), id2) a1 a2 m
+  | id1 == id2 = [((i1, i4), id1)]
+  | combine    = []
+  | mem2       = [((i1, i2), id1)] 
+  | mem1       = [((i1, i3), id2)]
+  | otherwise  = [((i1, i3), id2), ((i1, i2), id1)] 
+  where
+    mem1    = elem id1 a2
+    mem2    = elem id2 a1
+    combine = mem1 &&  mem2
+    i1      = lookUp (s, s') m
+    i2      = lookUp (t, s') m
+    i3      = lookUp (s, t') m
+    i4      = lookUp (t, t') m
 
 pruneTransitions :: [Transition] -> LTS
 pruneTransitions 
