@@ -141,7 +141,6 @@ compose lts1 lts2
     ps = [(x, y) | x <- s1, y <- s2]
     ts = [(t1, t2) | (s1, s2) <- ps, t1 <- transitions s1 lts1, t2 <- transitions s2 lts2]
     cs = [ts' | (t1, t2) <- ts, ts' <- composeTransitions t1 t2 a1 a2 []]
-    
 
 ------------------------------------------------------
 -- PART V
