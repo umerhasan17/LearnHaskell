@@ -46,11 +46,15 @@ printXMLs
 -- Part I
 
 skipSpace :: String -> String
-skipSpace []
-  = []
-skipSpace (x : xs)
-  | isAlphaNum x || isSymbol x || isPunctuation x = (x : xs)
-  | otherwise                                     = skipSpace xs
+skipSpace
+  = dropWhile isSpace
+
+-- skipSpace :: String -> String
+-- skipSpace []
+--   = []
+-- skipSpace (x : xs)
+--   | isAlphaNum x || isSymbol x || isPunctuation x = (x : xs)
+--   | otherwise                                     = skipSpace xs
 
 getAttribute :: String -> XML -> String
 getAttribute attr (Element _ attrs _)
@@ -165,23 +169,24 @@ parse s
 
 parse' :: String -> Stack -> XML
 parse' [] xs
-  = cs !! 0
+  = head cs
   where
     (Element _ _ cs) = head xs
 parse' ('<' : '/' : s) xs 
   = parse' rest (popAndAdd xs)
   where
-    (n, rest) = parseName s
+    (n, rest) = parseName (skipSpace s)
 parse' ('<' : s) xs
-  = parse' rest' xs'
+  = parse' (skipSpace rest') xs'
   where
-    (n, rest) = parseName s
+    (n, rest) = parseName (skipSpace s)
     (as, rest') = parseAttributes rest
     xs' = (Element n as []) : xs
 parse' s xs
-  = parse' rest (addText text xs) 
+  = parse' (skipSpace rest) (addText text xs) 
   where
-    (text, rest) = readTillBracket s
+    (text, rest) = break (== '<') s
+    -- (text, rest) = readTillBracket s
 
 readTillBracket :: String -> (String, String)
 readTillBracket xs@('<' : xs')
