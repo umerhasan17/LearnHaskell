@@ -110,8 +110,23 @@ composeTransitions ((s, t), id1) ((s', t'), id2) a1 a2 m
     i4      = lookUp (t, t') m
 
 pruneTransitions :: [Transition] -> LTS
-pruneTransitions 
-  = undefined
+pruneTransitions ts
+  = visit 0 [] ts
+
+visit :: State -> [State] -> [Transition] -> LTS
+visit s xs ts
+  | elem s xs = []
+  | otherwise = ts' ++ visit' allTos xs' ts
+  where
+    ts' = transitions s ts
+    (allFroms, allTos) = unzip (fst (unzip ts'))
+    xs' = allFroms ++ xs
+    visit' :: [State] -> [State] -> [Transition] -> LTS
+    visit' [] xs ts
+      = []
+    visit' (y : ys) xs ts
+      = (visit y xs ts) ++ (visit' ys xs ts)
+      
 
 ------------------------------------------------------
 -- PART IV
