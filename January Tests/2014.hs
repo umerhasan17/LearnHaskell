@@ -158,15 +158,18 @@ getFrontier s a
     ss = nub [t | (s, t, l) <- ts]
     rest = frontiers ++ result
     t = head (terminalStates a)
-    -- terminals = filter (elem terminalStates) ss
-    -- phantoms = [(s, t, Eps) | t <- terminals]
     frontiers = nub [(s, t, C c) | (s, t, C c) <- ts]
     recurse = nub [t | (s, t, Eps) <- ts]
     result = concat [getFrontier s a | s <- recurse]
 
 groupTransitions :: [Transition] -> [(Label, [State])]
-groupTransitions
-  = undefined
+groupTransitions ts
+  = zip ls ss
+  where
+    ls = labels ts
+    ss = (map (getStates ts)) ls
+    getStates ts l'
+      = [t | (s, t, l) <- ts, l == l']
 
 makeDA :: Automaton -> Automaton
 -- Pre: Any cycle in the NDA must include at least one non-Eps transition
