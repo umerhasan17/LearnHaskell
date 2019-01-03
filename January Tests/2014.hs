@@ -50,8 +50,8 @@ showRE' re
 
 lookUp :: Eq a => a -> [(a, b)] -> b
 --Pre: There is exactly one occurrence of the item being looked up.
-lookUp 
-  = undefined
+lookUp x xs
+  = fromJust (lookup x xs)
 
 simplify :: RE -> RE
 simplify
