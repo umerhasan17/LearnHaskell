@@ -91,8 +91,25 @@ labels ts
     ls = nub [l | (_, _, l) <- ts]
 
 accepts :: Automaton -> String -> Bool
-accepts 
-  = undefined
+accepts a@(s, _, _) str
+  = accepts' a s str
+
+accepts' :: Automaton -> State -> String -> Bool
+accepts' a s str
+  | (isTerminal s a) && (null str) = True
+  | otherwise                      = or [try a str t | t <- ts]
+  where
+    ts = transitionsFrom s a
+
+try :: Automaton -> String -> Transition -> Bool
+try a str (s, t, Eps)
+  = accepts' a t str
+try a [] (s, t, C c)
+  = False
+try a (x : xs) (s, t, C c)
+  | x == c    = accepts' a t xs
+  | otherwise = False
+
 
 --------------------------------------------------------
 -- Part III
