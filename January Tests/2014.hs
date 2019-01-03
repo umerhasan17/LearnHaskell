@@ -81,12 +81,14 @@ isTerminal s a
   = elem s (terminalStates a)
 
 transitionsFrom :: State -> Automaton -> [Transition]
-transitionsFrom
-  = undefined
+transitionsFrom s a
+  = [(s1, s2, l) | (s1, s2, l) <- (transitions a), s1 == s]
 
 labels :: [Transition] -> [Label]
-labels 
-  = undefined
+labels ts
+  = filter (not . (== Eps)) ls
+  where
+    ls = nub [l | (_, _, l) <- ts]
 
 accepts :: Automaton -> String -> Bool
 accepts 
