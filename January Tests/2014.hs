@@ -151,12 +151,18 @@ type MetaTransition = (MetaState, MetaState, Label)
 
 getFrontier :: State -> Automaton -> [Transition]
 getFrontier s a
-  = 
+  | or (map (flip isTerminal a) ss) = (t, t, Eps) : rest
+  | otherwise                       = rest
   where
     ts = transitionsFrom s a
-    ss = nub [t | (_, t, _) <- ts]
-    terminals = filter (elem terminalStates) ss
-    phantoms = [(s, t, Eps) | t <- terminals]
+    ss = nub [t | (s, t, l) <- ts]
+    rest = frontiers ++ result
+    t = head (terminalStates a)
+    -- terminals = filter (elem terminalStates) ss
+    -- phantoms = [(s, t, Eps) | t <- terminals]
+    frontiers = nub [(s, t, C c) | (s, t, C c) <- ts]
+    recurse = nub [t | (s, t, Eps) <- ts]
+    result = concat [getFrontier s a | s <- recurse]
 
 groupTransitions :: [Transition] -> [(Label, [State])]
 groupTransitions
