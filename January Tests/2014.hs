@@ -121,8 +121,26 @@ makeNDA re
     (transitions, k) = make (simplify re) 1 2 3
 
 make :: RE -> Int -> Int -> Int -> ([Transition], Int)
-make 
-  = undefined
+make Null m n k
+  = ([(m, n, Eps)], k)
+make (Term c) m n k
+  = ([(m, n, C c)], k)
+make (Seq r1 r2) m n k
+  = (((k, (k + 1), Eps) : ts1 ++ ts2), k'')
+  where
+    (ts1, k') = make r1 m k (k + 2)
+    (ts2, k'') = make r2 (k + 1) n k'
+make (Alt r1 r2) m n k
+  = (ts3 ++ ts1 ++ ts2, k'')
+  where
+    (ts1, k') = make r1 k (k + 1) (k + 4)
+    (ts2, k'') = make r2 (k + 2) (k + 3) k'
+    ts3 = [(m, k, Eps), (m, k + 2, Eps), (k + 1, n, Eps), (k + 3, n, Eps)]
+make (Rep r) m n k
+  = (ts2 ++ ts1, k')
+  where
+    (ts1, k') = make r k (k + 1) (k + 2)
+    ts2 = [(m, n, Eps), (m, k, Eps), (k + 1, k, Eps), (k + 1, n, Eps)]
 
 --------------------------------------------------------
 -- Part IV
