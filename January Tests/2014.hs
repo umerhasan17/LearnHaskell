@@ -54,8 +54,14 @@ lookUp x xs
   = fromJust (lookup x xs)
 
 simplify :: RE -> RE
-simplify
-  = undefined
+simplify (Plus r)
+  = (Seq r (Rep r))
+simplify (Opt r)
+  = (Alt r Null)
+simplify (Seq r r')
+  = (Seq (simplify r) (simplify r'))
+simplify r 
+  = r
 
 --------------------------------------------------------
 -- Part II
