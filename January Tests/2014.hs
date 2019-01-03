@@ -173,12 +173,17 @@ groupTransitions ts
 
 makeDA :: Automaton -> Automaton
 -- Pre: Any cycle in the NDA must include at least one non-Eps transition
-makeDA (s, ss, ts)
+makeDA a
   = undefined
 
-makeDA' :: [State] -> [MetaState] -> [MetaTransition] -> (MetaState, [MetaState], [MetaTransition])
-makeDA'
-  = undefined
+makeDA' :: Automaton -> [State] -> [MetaState] -> [MetaTransition] -> (MetaState, [MetaState], [MetaTransition])
+makeDA' a is ms ts
+  | elem newMetastate ms = (newMetastate, ms, ts)
+  | otherwise            = undefined
+  where
+    fs = concat (map (flip getFrontier a) is)
+    newMetastate = sort (nub ([s | (s, t, l) <- fs])) 
+    grouped = groupTransitions fs
 
 --------------------------------------------------------
 -- Test cases
