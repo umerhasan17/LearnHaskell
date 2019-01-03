@@ -150,8 +150,13 @@ type MetaState = [State]
 type MetaTransition = (MetaState, MetaState, Label)
 
 getFrontier :: State -> Automaton -> [Transition]
-getFrontier
-  = undefined
+getFrontier s a
+  = 
+  where
+    ts = transitionsFrom s a
+    ss = nub [t | (_, t, _) <- ts]
+    terminals = filter (elem terminalStates) ss
+    phantoms = [(s, t, Eps) | t <- terminals]
 
 groupTransitions :: [Transition] -> [(Label, [State])]
 groupTransitions
@@ -159,7 +164,11 @@ groupTransitions
 
 makeDA :: Automaton -> Automaton
 -- Pre: Any cycle in the NDA must include at least one non-Eps transition
-makeDA 
+makeDA (s, ss, ts)
+  = undefined
+
+makeDA' :: [State] -> [MetaState] -> [MetaTransition] -> (MetaState, [MetaState], [MetaTransition])
+makeDA'
   = undefined
 
 --------------------------------------------------------
