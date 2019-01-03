@@ -67,18 +67,18 @@ simplify r
 -- Part II
 
 startState :: Automaton -> State
-startState
-  = undefined
+startState (s, _, _)
+  = s
 terminalStates :: Automaton -> [State]
-terminalStates
-  = undefined
+terminalStates (_, ts, _)
+  = ts
 transitions :: Automaton -> [Transition]
-transitions 
-  = undefined
+transitions (_, _, t)
+  = t
 
 isTerminal :: State -> Automaton -> Bool
-isTerminal 
-  = undefined
+isTerminal s a
+  = elem s (terminalStates a)
 
 transitionsFrom :: State -> Automaton -> [Transition]
 transitionsFrom
