@@ -177,7 +177,7 @@ executeStatement (While e b) fs ps s
   where
     v = eval e fs s
 executeStatement (Call [] p es) fs ps s -- procedure does not return a result
-  = ls ++ executeBlock b fs ps s_in  -- use getLocals, Globals
+  = ls ++ getGlobals s_out  -- use getLocals, Globals
   where
     (as, b) = lookUp p ps
     vs = evalArgs es fs s
@@ -185,12 +185,27 @@ executeStatement (Call [] p es) fs ps s -- procedure does not return a result
     gs = getGlobals s
     ls = getLocals s -- add this back in later to the state
     s_in = bs ++ gs -- feed this state into the call
-    
-executeStatement (Call id1 f es) fs ps s -- procedure does return a result
-  = undefined -- use getLocals, Globals
+    s_out = executeBlock b fs ps s_in
+executeStatement (Call id1 p es) fs ps s -- procedure does return a result
+  = add_r  -- use getLocals, Globals
+  where
+    (as, b) = lookUp p ps
+    vs = evalArgs es fs s
+    bs = bindArgs as vs
+    gs = getGlobals s
+    ls = getLocals s -- add this back in later to the state
+    s_in = bs ++ gs -- feed this state into the call
+    s_out = executeBlock b fs ps s_in
+    r = getValue "$res" s_out
+    s_out' = ls ++ getGlobals s_out
+    add_r = updateVar (id1, r) s_out'
   -- update binding for id1 with return statement $res
 executeStatement (Return e) fs ps s
-  = undefined
+  = s'
+  where
+    v = eval e fs s
+    s' = updateVar ("$res", v) s
+
 
 executeBlock :: Block -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: All code blocks and associated statements are well formed
