@@ -176,9 +176,17 @@ executeStatement (While e b) fs ps s
   | otherwise  = s
   where
     v = eval e fs s
-executeStatement (Call [] id2 es) fs ps s -- procedure does not return a result
-  = undefined -- use getLocals, Globals
-executeStatement (Call id1 id2 es) fs ps s -- procedure does not return a result
+executeStatement (Call [] p es) fs ps s -- procedure does not return a result
+  = ls ++ executeBlock b fs ps s_in  -- use getLocals, Globals
+  where
+    (as, b) = lookUp p ps
+    vs = evalArgs es fs s
+    bs = bindArgs as vs
+    gs = getGlobals s
+    ls = getLocals s -- add this back in later to the state
+    s_in = bs ++ gs -- feed this state into the call
+    
+executeStatement (Call id1 f es) fs ps s -- procedure does return a result
   = undefined -- use getLocals, Globals
   -- update binding for id1 with return statement $res
 executeStatement (Return e) fs ps s
