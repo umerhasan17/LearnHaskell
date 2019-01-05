@@ -156,9 +156,14 @@ executeStatement :: Statement -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: For array element assignment (AssignA) the array variable is in scope,
 --      i.e. it has a binding in the given state
 executeStatement (Assign id e) fs ps s
-  = undefined -- use updateVar
+  = updateVar (id, v) s
+  where
+    v = eval e fs s
 executeStatement (AssignA id e1 e2) fs ps s
   = undefined -- use updateVar & assignArray
+  where
+    v1 = eval e1 fs s
+    v2 = eval e2 fs s
 executeStatement (If e b1 b2) fs ps s
   | v == (I 1) = executeBlock b1 fs ps s
   | otherwise  = executeBlock b2 fs ps s
