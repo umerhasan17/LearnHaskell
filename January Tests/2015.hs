@@ -160,10 +160,12 @@ executeStatement (Assign id e) fs ps s
   where
     v = eval e fs s
 executeStatement (AssignA id e1 e2) fs ps s
-  = undefined -- use updateVar & assignArray
+  = updateVar (id, a') s -- use updateVar & assignArray
   where
     v1 = eval e1 fs s
     v2 = eval e2 fs s
+    a'  = assignArray a v1 v2 -- array index value so these might need to be switched
+    a  = getValue id s 
 executeStatement (If e b1 b2) fs ps s
   | v == (I 1) = executeBlock b1 fs ps s
   | otherwise  = executeBlock b2 fs ps s
