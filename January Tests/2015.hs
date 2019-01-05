@@ -95,8 +95,21 @@ updateVar (i, v) (b : bs)
 
 applyOp :: Op -> Value -> Value -> Value
 -- Pre: The values have the appropriate types (I or A) for each primitive
-applyOp 
-  = undefined
+applyOp Add (I v1) (I v2)
+  = (I (v1 + v2))
+applyOp Mul (I v1) (I v2)
+  = (I (v1 * v2))
+applyOp Less (I v1) (I v2)
+  | v1 < v2   = (I v1)
+  | otherwise = (I v2)
+applyOp Equal (I v1) (I v2)
+  | v1 == v2  = (I 1)
+  | otherwise = (I 0)
+applyOp Index (A v1) (I v2)
+  | v == []   = (I 0)
+  | otherwise = (I (v !! 0))
+  where
+    v = [v | (i, v) <- v1, i == v2]
 
 bindArgs :: [Id] -> [Value] -> State
 -- Pre: the lists have the same length
