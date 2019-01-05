@@ -143,11 +143,38 @@ eval (FunApp f es) fs s
 ---------------------------------------------------------------------
 -- Part III
 
+-- data Statement = Assign Id Exp |
+--                  AssignA Id Exp Exp |
+--                  If Exp Block Block |
+--                  While Exp Block |
+--                  Call Id Id [Exp] |
+--                  Return Exp 
+--                deriving (Eq, Show)
+
 executeStatement :: Statement -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: All statements are well formed 
 -- Pre: For array element assignment (AssignA) the array variable is in scope,
 --      i.e. it has a binding in the given state
-executeStatement 
+executeStatement (Assign id e) fs ps s
+  = undefined -- use updateVar
+executeStatement (AssignA id e1 e2) fs ps s
+  = undefined -- use updateVar & assignArray
+executeStatement (If e b1 b2) fs ps s
+  | v == (I 1) = executeBlock b1 fs ps s
+  | otherwise  = executeBlock b2 fs ps s
+  where
+    v = eval e fs s
+executeStatement (While e b) fs ps s
+  | v == (I 1) = executeBlock b fs ps s
+  | otherwise  = s
+  where
+    v = eval e fs s
+executeStatement (Call [] id2 es) fs ps s -- procedure does not return a result
+  = undefined -- use getLocals, Globals
+executeStatement (Call id1 id2 es) fs ps s -- procedure does not return a result
+  = undefined -- use getLocals, Globals
+  -- update binding for id1 with return statement $res
+executeStatement (Return e) fs ps s
   = undefined
 
 executeBlock :: Block -> [FunDef] -> [ProcDef] -> State -> State
