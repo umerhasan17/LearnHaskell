@@ -113,8 +113,8 @@ applyOp Index (A v1) (I v2)
 
 bindArgs :: [Id] -> [Value] -> State
 -- Pre: the lists have the same length
-bindArgs
-  = undefined
+bindArgs ids vs
+  = [(i, (Local, v)) | (i, v) <- zip ids vs]
 
 evalArgs :: [Exp] -> [FunDef] -> State -> [Value]
 evalArgs
