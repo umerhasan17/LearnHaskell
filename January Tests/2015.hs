@@ -179,9 +179,12 @@ executeStatement (Return e) fs ps s
 
 executeBlock :: Block -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: All code blocks and associated statements are well formed
-executeBlock 
-  = undefined
-
+executeBlock [] _ _ s
+  = s
+executeBlock (b : bs) fs ps s
+  = executeBlock bs fs ps s'
+  where
+    s' = executeStatement b fs ps s
 ---------------------------------------------------------------------
 -- Part IV
 
