@@ -61,23 +61,25 @@ type State = [Binding]
 
 getValue :: Id -> State -> Value
 -- Pre: The identifier has a binding in the state
-getValue 
-  = undefined
+getValue i s
+  = snd (lookUp i s)
 
 getLocals :: State -> State
-getLocals
-  = undefined
+getLocals s
+  = [xs | xs@(i, (sc, v)) <- s, sc == Local]
 
 getGlobals :: State -> State
-getGlobals
-  = undefined
+getGlobals s
+  = [xs | xs@(i, (sc, v)) <- s, sc == Global]
 
 assignArray :: Value -> Value -> Value -> Value
 -- The arguments are the array, index and (new) value respectively
 -- Pre: The three values have the appropriate value types (array (A), 
 --      integer (I) and integer (I)) respectively.
-assignArray 
-  = undefined
+assignArray (A a) (I i) (I v)
+  = (A ((i, v) : a'))
+  where
+    a' = [(i', v') | (i', v') <- a, i' /= i] 
 
 updateVar :: (Id, Value) -> State -> State
 updateVar 
