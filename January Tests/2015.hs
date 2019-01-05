@@ -143,14 +143,6 @@ eval (FunApp f es) fs s
 ---------------------------------------------------------------------
 -- Part III
 
--- data Statement = Assign Id Exp |
---                  AssignA Id Exp Exp |
---                  If Exp Block Block |
---                  While Exp Block |
---                  Call Id Id [Exp] |
---                  Return Exp 
---                deriving (Eq, Show)
-
 executeStatement :: Statement -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: All statements are well formed 
 -- Pre: For array element assignment (AssignA) the array variable is in scope,
@@ -205,7 +197,6 @@ executeStatement (Return e) fs ps s
   where
     v = eval e fs s
     s' = updateVar ("$res", v) s
-
 
 executeBlock :: Block -> [FunDef] -> [ProcDef] -> State -> State
 -- Pre: All code blocks and associated statements are well formed
