@@ -100,8 +100,8 @@ applyOp Add (I v1) (I v2)
 applyOp Mul (I v1) (I v2)
   = (I (v1 * v2))
 applyOp Less (I v1) (I v2)
-  | v1 < v2   = (I v1)
-  | otherwise = (I v2)
+  | v1 < v2   = (I 1)
+  | otherwise = (I 0)
 applyOp Equal (I v1) (I v2)
   | v1 == v2  = (I 1)
   | otherwise = (I 0)
@@ -117,15 +117,29 @@ bindArgs ids vs
   = [(i, (Local, v)) | (i, v) <- zip ids vs]
 
 evalArgs :: [Exp] -> [FunDef] -> State -> [Value]
-evalArgs
-  = undefined
+evalArgs es fs s
+  = [eval e fs s | e <- es]
 
 eval :: Exp -> [FunDef] -> State -> Value
 -- Pre: All expressions are well formed
 -- Pre: All variables referenced have bindings in the given state
-eval 
-  = undefined
-
+eval (Const c) _ _
+  = c
+eval (Var id) _ s
+  = getValue id s
+eval (OpApp o e1 e2) f s
+  = applyOp o (eval e1 f s) (eval e2 f s)
+eval (Cond e1 e2 e3) f s
+  | v1 == (I 1) = eval e2 f s
+  | otherwise   = eval e3 f s
+  where
+    v1 = eval e1 f s
+eval (FunApp f es) fs s
+  = eval e fs (bs ++ s)
+  where
+    (as, e) = lookUp f fs
+    vs = evalArgs es fs s
+    bs = bindArgs as vs
 ---------------------------------------------------------------------
 -- Part III
 
