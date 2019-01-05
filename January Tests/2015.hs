@@ -82,8 +82,13 @@ assignArray (A a) (I i) (I v)
     a' = [(i', v') | (i', v') <- a, i' /= i] 
 
 updateVar :: (Id, Value) -> State -> State
-updateVar 
-  = undefined
+updateVar (i, v) []
+  = [(i, (Local, v))]
+updateVar (i, v) (b : bs)
+  | i == i'   = (i', (s', v)) : bs
+  | otherwise = b : updateVar (i, v) bs
+  where
+    (i', (s', v')) = b
 
 ---------------------------------------------------------------------
 -- Part II
