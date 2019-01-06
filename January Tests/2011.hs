@@ -78,9 +78,46 @@ occurs _ _
 -- Pre: All type variables in the expression have a binding in the given 
 --      type environment
 inferType :: Expr -> TEnv -> Type
-inferType
-  = undefined
+inferType (Number n) _
+  = TInt
+inferType (Boolean b) _
+  = TBool
+inferType (Id s) env
+  = lookUp s env
+inferType (Prim s) _
+  = tryToLookUp s (TErr) primTypes
+inferType (Cond e1 e2 e3) env
+  | c1 && (t2 == t3) = t2
+  | otherwise        = TErr
+  where
+    -- check all 3 expressions
+    c1 = TBool == inferType e1 env
+    t2 = inferType e2 env
+    t3 = inferType e3 env
+inferType e env
+  = inferApp e env
 
+inferApp :: Expr -> TEnv -> Type
+inferApp (App e1 e2) env
+  = undefined
+--   data Expr = Number Int |
+--   Boolean Bool |
+--   Id String  |
+--   Prim String |
+--   Cond Expr Expr Expr |
+--   App Expr Expr |
+--   Fun String Expr
+-- deriving (Eq, Show)
+
+-- data Type = TInt |
+--             TBool |
+--             TFun Type Type |
+--             TVar String |
+--             TErr 
+--           deriving (Eq, Show)
+
+
+-- define a helper inferApp to intfer the type of a functional application, App f a say, in terms of the inferred of f and argument
 ------------------------------------------------------
 -- PART III
 
