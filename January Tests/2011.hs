@@ -64,8 +64,12 @@ reverseLookUp b xs
   = [a' | (a', b') <- xs, b' == b]
 
 occurs :: String -> Type -> Bool
-occurs 
-  = undefined
+occurs s (TFun t t')
+  = or [occurs s t, occurs s t']
+occurs s (TVar s')
+  = s == s'
+occurs _ _
+  = False
 
 ------------------------------------------------------
 -- PART II
