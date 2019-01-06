@@ -78,7 +78,7 @@ occurs _ _
 -- Pre: All type variables in the expression have a binding in the given 
 --      type environment
 inferType :: Expr -> TEnv -> Type
-inferType (Boolean b) _
+inferType (Boolean b) _         -- ERROR HERE IF I SWITCH THESE 2 PATTERN MATCHES AROUND
   = TBool
 inferType (Number n) _
   = TInt
@@ -110,8 +110,13 @@ inferApp _ _
 ------------------------------------------------------
 -- PART III
 
-applySub
-  = undefined
+applySub :: Sub -> Type -> Type
+applySub s (TVar v)
+  = tryToLookUp v (TVar v) s
+applySub s (TFun t t')
+  = (TFun (applySub s t) (applySub s t'))
+applySub s t
+  = t
 
 unify :: Type -> Type -> Maybe Sub
 unify t t'
