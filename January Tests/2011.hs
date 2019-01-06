@@ -123,8 +123,23 @@ unify t t'
   = unifyPairs [(t, t')] []
 
 unifyPairs :: [(Type, Type)] -> Sub -> Maybe Sub
-unifyPairs
+unifyPairs [] s
+  = Just s
+unifyPairs (t : ts) s
   = undefined
+  where
+
+unifyPair :: (Type, Type) -> Sub -> Maybe Sub
+unifyPair (TInt, TInt) s
+  = undefined
+unifyPair (TBool, TBool) s
+  = undefined
+
+
+-- Notes
+-- use applySub to apply singleton sub
+-- don't forget to include occurs check
+-- 
 
 ------------------------------------------------------
 -- PART IV
