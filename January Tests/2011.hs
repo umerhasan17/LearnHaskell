@@ -125,16 +125,25 @@ unify t t'
 unifyPairs :: [(Type, Type)] -> Sub -> Maybe Sub
 unifyPairs [] s
   = Just s
-unifyPairs (t : ts) s
-  = undefined
-  where
+unifyPairs ((TInt, TInt) : ts) s
+  = unifyPairs ts s
+unifyPairs ((TBool, TBool) : ts) s
+  = unifyPairs ts s
+unifyPairs ((TVar v, TVar v') : ts) s
+  | v == v'   = undefined
+  | otherwise = undefined
+unifyPairs ((TVar v, t) : ts) s
+  = Just ((v, t) : fromJust (unifyPairs ts s))
+unifyPairs ((t, TVar v) : ts) s
+  = Just ((v, t) : fromJust (unifyPairs ts s))
+unifyPairs ((TInt, TInt) : ts) s
+  = unifyPairs ts s
+unifyPairs ((TInt, TInt) : ts) s
+  = unifyPairs ts s
+unifyPairs ((TInt, TInt) : ts) s
+  = unifyPairs ts s
 
-unifyPair :: (Type, Type) -> Sub -> Maybe Sub
-unifyPair (TInt, TInt) s
-  = undefined
-unifyPair (TBool, TBool) s
-  = undefined
-
+--  type TypeTable = [(String, Type)]
 
 -- Notes
 -- use applySub to apply singleton sub
