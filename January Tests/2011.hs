@@ -131,7 +131,6 @@ unifyPairs ((TBool, TBool) : ts) s
   = unifyPairs ts s
 unifyPairs ((TVar v, TVar v') : ts) s
   | v == v'   = unifyPairs ts s
-  | otherwise = undefined
 unifyPairs ((TVar v, t) : ts) s
   | not (occurs v t) = Just ((v, t) : fromJust (unifyPairs ts' s))
   where
@@ -140,9 +139,11 @@ unifyPairs ((t, TVar v) : ts) s
   | not (occurs v t) = Just ((v, t) : fromJust (unifyPairs ts' s))
   where
     ts' = [(applySub s t1, applySub s t2) | (t1, t2) <- ts]
-unifyPairs ((TFun t1 t2, TFun t1' t2') : ts) s
-  = undefined
-  -- = Just ((t1, t1') : ((t2, t2') : (fromJust (unifyPairs ts s))))
+unifyPairs (((TFun t1 t2), (TFun t1' t2')) : ts) s
+  = s'
+  where
+    ts' = (t1, t1') : (t2, t2') : ts
+    s' = unifyPairs ts' s
 unifyPairs _ _
   = Nothing
 
