@@ -78,10 +78,10 @@ occurs _ _
 -- Pre: All type variables in the expression have a binding in the given 
 --      type environment
 inferType :: Expr -> TEnv -> Type
-inferType (Number n) _
-  = TInt
 inferType (Boolean b) _
   = TBool
+inferType (Number n) _
+  = TInt
 inferType (Id s) env
   = lookUp s env
 inferType (Prim s) _
