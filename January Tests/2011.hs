@@ -94,30 +94,19 @@ inferType (Cond e1 e2 e3) env
     c1 = TBool == inferType e1 env
     t2 = inferType e2 env
     t3 = inferType e3 env
-inferType e env
-  = inferApp e env
+inferType (App f a) env
+  | t == ta   = t' 
+  | otherwise = TErr
+  where
+    (TFun t t') = inferApp (inferType f env) env
+    ta = inferType a env
 
-inferApp :: Expr -> TEnv -> Type
-inferApp (App e1 e2) env
-  = undefined
---   data Expr = Number Int |
---   Boolean Bool |
---   Id String  |
---   Prim String |
---   Cond Expr Expr Expr |
---   App Expr Expr |
---   Fun String Expr
--- deriving (Eq, Show)
+inferApp :: Type -> TEnv -> Type
+inferApp (TFun t t') env
+  = (TFun t t')
+inferApp _ _
+  = (TFun TErr TErr)
 
--- data Type = TInt |
---             TBool |
---             TFun Type Type |
---             TVar String |
---             TErr 
---           deriving (Eq, Show)
-
-
--- define a helper inferApp to intfer the type of a functional application, App f a say, in terms of the inferred of f and argument
 ------------------------------------------------------
 -- PART III
 
