@@ -142,14 +142,6 @@ unifyPairs (((TFun t1 t2), (TFun t1' t2')) : ts) s
 unifyPairs _ _
   = Nothing
 
-
---  type TypeTable = [(String, Type)]
-
--- Notes
--- use applySub to apply singleton sub
--- don't forget to include occurs check
--- 
-
 ------------------------------------------------------
 -- PART IV
 
