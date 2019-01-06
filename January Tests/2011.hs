@@ -130,18 +130,22 @@ unifyPairs ((TInt, TInt) : ts) s
 unifyPairs ((TBool, TBool) : ts) s
   = unifyPairs ts s
 unifyPairs ((TVar v, TVar v') : ts) s
-  | v == v'   = undefined
+  | v == v'   = unifyPairs ts s
   | otherwise = undefined
 unifyPairs ((TVar v, t) : ts) s
-  = Just ((v, t) : fromJust (unifyPairs ts s))
+  | not (occurs v t) = Just ((v, t) : fromJust (unifyPairs ts' s))
+  where
+    ts' = [(applySub s t1, applySub s t2) | (t1, t2) <- ts]
 unifyPairs ((t, TVar v) : ts) s
-  = Just ((v, t) : fromJust (unifyPairs ts s))
-unifyPairs ((TInt, TInt) : ts) s
-  = unifyPairs ts s
-unifyPairs ((TInt, TInt) : ts) s
-  = unifyPairs ts s
-unifyPairs ((TInt, TInt) : ts) s
-  = unifyPairs ts s
+  | not (occurs v t) = Just ((v, t) : fromJust (unifyPairs ts' s))
+  where
+    ts' = [(applySub s t1, applySub s t2) | (t1, t2) <- ts]
+unifyPairs ((TFun t1 t2, TFun t1' t2') : ts) s
+  = undefined
+  -- = Just ((t1, t1') : ((t2, t2') : (fromJust (unifyPairs ts s))))
+unifyPairs _ _
+  = Nothing
+
 
 --  type TypeTable = [(String, Type)]
 
