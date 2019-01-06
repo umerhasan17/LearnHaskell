@@ -51,17 +51,17 @@ primTypes
 
 -- Pre: The search item is in the table
 lookUp :: Eq a => a -> [(a, b)] -> b
-lookUp 
-  = undefined
+lookUp a b
+  = fromJust (lookup a b)
 
 tryToLookUp :: Eq a => a -> b -> [(a, b)] -> b
-tryToLookUp 
-  = undefined
+tryToLookUp a b xs
+  = fromMaybe b (lookup a xs)
 
 -- Pre: The given value is in the table
 reverseLookUp :: Eq b => b -> [(a, b)] -> [a]
-reverseLookUp 
-  = undefined
+reverseLookUp b xs
+  = [a' | (a', b') <- xs, b' == b]
 
 occurs :: String -> Type -> Bool
 occurs 
