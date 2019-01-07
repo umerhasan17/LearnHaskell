@@ -82,15 +82,21 @@ restrict e _ _
 -- The question suggests the following definition (in terms of buildBDD')
 -- but you are free to implement the function differently if you wish.
 buildBDD :: BExp -> [Index] -> BDD
-buildBDD 
-  = undefined
+buildBDD e xs
+  = buildBDD' e 2 xs
 
 -- Potential helper function for buildBDD which you are free
 -- to define/modify/ignore/delete/embed as you see fit.
 buildBDD' :: BExp -> NodeId -> [Index] -> BDD
-buildBDD' 
-  = undefined
-
+buildBDD' (Prim b) _ _
+  = (fromEnum b, [])
+buildBDD' e n (i : is)
+  = (n, (n, (i, l, r)) : nodes ++ nodes')
+  where
+    eF = restrict e i False
+    eT = restrict e i True
+    (l, nodes)  = buildBDD' eF (2 *  n) is
+    (r, nodes') = buildBDD' eT (2 * n + 1) is
 ------------------------------------------------------
 -- PART IV
 
