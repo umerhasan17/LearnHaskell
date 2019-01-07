@@ -161,14 +161,46 @@ combineSubs
 
 inferPolyType :: Expr -> Type
 inferPolyType
-  = undefined
+  -- = let (_, t, _) = inferPolyType' e [] vs in t
 
 -- You may optionally wish to use one of the following helper function declarations
 -- as suggested in the specification. 
 
--- inferPolyType' :: Expr -> TEnv -> [String] -> (Sub, Type, [String])
--- inferPolyType'
---   = undefined
+-- list of string to reach for variables. a -> a is the same as b -> b to c -> c. Makes up new names.
+-- the return list is the variables to use now.
+inferPolyType' :: Expr -> TEnv -> [String] -> (Sub, Type, [String])
+inferPolyType' (Number _) _ vs
+  = ([], TInt, vs)
+inferPolyType' (Boolean _) _ vs
+  = ([], TBool, vs)
+inferPolyType' (Id x) env vs
+  = ([], lookUp x env, vs)
+-- function from variable x to e. 
+inferPolyType' (Fun x e) _ (v : vs)
+  = (se, TFun tx te, vse)
+  where
+    tx = TVar v
+    b = (x, tx)
+    (se, te, vse) = inferPolyType' e (b : env) vs
+    tx' = applySub se tx
+inferPolyType' (App f e) env (v : vs)
+  = (s, TFun te tb', vse)
+  where
+    -- this infer gives back function type which is useful for inferring argument
+    (sf, tf, vsf) = inferPolyType' f env vs
+    env'          = updateTEnv sf env
+    -- infer type of argument
+    (se, te, vse) = inferPolyType' e env' vsf
+    tb            = TVar v
+    msu           = unify tf (TFun te tb)
+    (su, tb')     = checkUnification msu tb
+    s             = combineSubs 
+
+checkUnification :: Maybe Sub -> Type -> (Sub, Type)
+checkUnification (Just s) t
+  = (s, applySub s t)
+checkUnification _ _
+  = ([], TErr)
 
 -- inferPolyType' :: Expr -> TEnv -> Int -> (Sub, Type, Int)
 -- inferPolyType' 
