@@ -55,8 +55,8 @@ simplify (And (Prim b) (Prim b'))
   = (Prim (b && b'))
 simplify (Or (Prim b) (Prim b'))
   = (Prim (b || b'))
-simplify exp
-  = exp
+simplify e
+  = e
 
 -- replace the index with the boolean 
 -- simplify 
@@ -66,14 +66,14 @@ restrict :: BExp -> Index -> Bool -> BExp
 restrict (IdRef i) index b
   | i == index = (Prim b)
   | otherwise  = (IdRef i)
-restrict (Not exp) index b
-  = simplify (Not (restrict exp index b))
-restrict (And exp exp') index b
-  = simplify (And (restrict exp index b) (restrict exp' index b))
-restrict (Or exp exp') index b
-  = simplify (Or (restrict exp index b) (restrict exp' index b))
-restrict exp _ _
-  = exp
+restrict (Not e) index b
+  = simplify (Not (restrict e index b))
+restrict (And e e') index b
+  = simplify (And (restrict e index b) (restrict e' index b))
+restrict (Or e e') index b
+  = simplify (Or (restrict e index b) (restrict e' index b))
+restrict e _ _
+  = e
 
 ------------------------------------------------------
 -- PART III

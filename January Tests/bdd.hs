@@ -61,8 +61,18 @@ simplify e
   = e
 
 restrict :: BExp -> Index -> Bool -> BExp
-restrict 
-  = undefined
+restrict e@(Prim b) _ _
+  = e
+restrict e@(IdRef i') i b
+  | i == i' = Prim b
+restrict (Not e) i b
+  = simplify (Not (restrict e i b))
+restrict (And e e') i b
+  = simplify (And (restrict e i b) (restrict e' i b))
+restrict (Or e e') i b
+  = simplify (Or (restrict e i b) (restrict e' i b))
+restrict e _ _
+  = e
 
 ------------------------------------------------------
 -- PART III
