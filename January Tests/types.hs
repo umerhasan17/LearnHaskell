@@ -62,8 +62,12 @@ reverseLookUp
   = undefined
 
 occurs :: String -> Type -> Bool
-occurs 
-  = undefined
+occurs s (TFun t t')
+  = occurs s t || occurs s t'
+occurs s (TVar s')
+  = s == s'
+occurs _ _
+  = False
 
 ------------------------------------------------------
 -- PART II
@@ -72,9 +76,30 @@ occurs
 -- Pre: All type variables in the expression have a binding in the given 
 --      type environment
 inferType :: Expr -> TEnv -> Type
-inferType
-  = undefined
-
+inferType (Number n) _
+  = TInt
+inferType (Boolean b) _         -- ERROR HERE IF I SWITCH THESE 2 PATTERN MATCHES AROUND
+  = TBool
+inferType (Id s) env
+  = lookUp s env
+inferType (Prim s) _
+  = tryToLookUp s (TErr) primTypes
+inferType (Cond p t f) env
+  | tp == TBool && tf == tt = tt 
+  | otherwise               = TErr
+  where
+    tp = inferType p env
+    tt = inferType t env
+    tf = inferType f env
+inferType (App f x) env
+  = inferApp (inferType f env)
+  where
+    inferApp (TFun ta tb)
+      | inferType x env == ta = tb
+    inferApp _
+      = TErr
+      
+-- let f e t = inferType e env == t in and (zipWith f ex1To8 type1To8)
 ------------------------------------------------------
 -- PART III
 
