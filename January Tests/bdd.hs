@@ -35,8 +35,17 @@ checkSat (root, nodes) env
         (i, l, r) = lookUp n nodes
 
 sat :: BDD -> [[(Index, Bool)]]
-sat 
-  = undefined
+sat (root,  nodes)
+  = sat' root
+  where
+    sat' 0
+      = []
+    sat' 1
+      = [[]]
+    sat' n
+      = map ((i, False) :) (sat' l) ++ map ((i, True) :) (sat' r)
+      where
+        (i, l, r) = lookUp n nodes
 
 ------------------------------------------------------
 -- PART II
