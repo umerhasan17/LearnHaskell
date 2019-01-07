@@ -1,4 +1,5 @@
 import Data.List
+import Data.Maybe
 
 type Index = Int
 
@@ -19,11 +20,19 @@ type BDD = (NodeId, [BDDNode])
 -- Pre: The item is in the given table
 lookUp :: Eq a => a -> [(a, b)] -> b
 lookUp 
-  = undefined
+  = (fromJust .) . lookup
+  -- 2 dots?
 
 checkSat :: BDD -> Env -> Bool
-checkSat 
-  = undefined
+checkSat (root, nodes) env
+  = check root
+  where
+    check n
+      | n < 2        = (n == 1) -- DON'T do if n == 1 then True else False (-1 mark) 
+      | lookUp i env = check r 
+      | otherwise    = check l
+      where
+        (i, l, r) = lookUp n nodes
 
 sat :: BDD -> [[(Index, Bool)]]
 sat 
