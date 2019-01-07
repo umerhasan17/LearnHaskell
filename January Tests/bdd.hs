@@ -123,6 +123,9 @@ buildROBDD' e n (i : is) nodes
     eT = restrict e i True
     (l, nodes')  = buildROBDD' eF (2 *  n) is nodes
     (r, nodes'') = buildROBDD' eT (2 * n + 1) is nodes'
+    
+revLookUp i t
+  = lookup i [(v, k) | (k, v) <- t]
 
 ------------------------------------------------------
 -- Examples for testing...
