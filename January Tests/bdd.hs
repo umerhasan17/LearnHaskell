@@ -111,11 +111,11 @@ buildROBDD e xs
 -- Potential helper function for buildBDD which you are free
 -- to define/modify/ignore/delete/embed as you see fit.
 buildROBDD' :: BExp -> NodeId -> [Index] -> [BDDNode] -> BDD
-buildROBDD' (Prim b) _ _ _
-  = (fromEnum b, [])
+buildROBDD' (Prim b) _ _ nodes
+  = (fromEnum b, nodes)
 buildROBDD' e n (i : is) nodes
   | l == r    = (l, nodes') 
-  | otherwise = maybe (n, (n, (i, l, r)) : nodes' ++ nodes'')
+  | otherwise = maybe (n, (n, (i, l, r)) : nodes'')
                       (\n' -> (n', nodes''))
                       (revLookUp (i, l, r) nodes'')
   where
