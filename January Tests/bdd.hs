@@ -102,9 +102,27 @@ buildBDD' e n (i : is)
 
 -- Pre: Each variable index in the BExp appears exactly once
 --      in the Index list; there are no other elements
+-- have I built this node before? lookUp
 buildROBDD :: BExp -> [Index] -> BDD
-buildROBDD 
-  = undefined
+buildROBDD e xs
+  = buildROBDD' e 2 xs []
+  -- accumulating parameter since need to see all the nodes that have been built to do reverse lookup
+
+-- Potential helper function for buildBDD which you are free
+-- to define/modify/ignore/delete/embed as you see fit.
+buildROBDD' :: BExp -> NodeId -> [Index] -> [BDDNode] -> BDD
+buildROBDD' (Prim b) _ _ _
+  = (fromEnum b, [])
+buildROBDD' e n (i : is) nodes
+  | l == r    = (l, nodes') 
+  | otherwise = maybe (n, (n, (i, l, r)) : nodes' ++ nodes'')
+                      (\n' -> (n', nodes''))
+                      (revLookUp (i, l, r) nodes'')
+  where
+    eF = restrict e i False
+    eT = restrict e i True
+    (l, nodes')  = buildROBDD' eF (2 *  n) is nodes
+    (r, nodes'') = buildROBDD' eT (2 * n + 1) is nodes'
 
 ------------------------------------------------------
 -- Examples for testing...
