@@ -99,7 +99,7 @@ foldConst (Apply Add (Const 0) e@(Var v))
   = e
 foldConst e
   = e
-
+ 
 sub :: Id -> Int -> Exp -> Exp
 -- Pre: the expression is in SSA form
 sub v c e
