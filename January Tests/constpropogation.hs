@@ -36,26 +36,45 @@ execFun (name, args, p) vs
 type State = [(Id, Int)]
 
 update :: (Id, Int) -> State -> State
-update 
-  = undefined
+update (i, v) s
+  -- = (i, v) : [p | p@(i', v') <- s, i == i']
+  = (i, v) : filter ((/=i) . fst) s
 
 apply :: Op -> Int -> Int -> Int
-apply 
-  = undefined
+apply
+  = flip lookUp ops
+  where
+    ops     = [(Add, (+)), (Mul, (*)), (Eq, ((fromEnum .) . (==))), (Gtr, ((fromEnum .) . (>)))]
+    eq a b  = fromEnum (a == b)
+    gtr a b = fromEnum (a > b)
 
 eval :: Exp -> State -> Int
 -- Pre: the variables in the expression will all be bound in the given state 
 -- Pre: expressions do not contain phi instructions
-eval 
-  = undefined
+eval (Const n) _
+  = n
+eval (Var v) s
+  = lookUp v s
+eval (Apply op e e') s
+  = apply op (eval e s) (eval e' s)
 
 execStatement :: Statement -> State -> State
-execStatement 
-  = undefined
+execStatement (Assign v e) s 
+  = update (v, eval e s) s
+-- don't use x y z. For IF statements use predicate q r OR p b b' OR e b b'
+execStatement (If p q r) s 
+  | eval p s == 1 = execBlock q s 
+  | otherwise     = execBlock r s
+execStatement dw@(DoWhile b p) s
+  | eval p s' == 1 = execStatement dw s'
+  | otherwise      = s'
+  where
+    s' = execBlock b s
 
 execBlock :: Block -> State -> State
-execBlock 
-  = undefined
+-- exec s3 (exec s2 (exec s1 st)) i.e. fold left
+execBlock b s
+  = foldl (flip execStatement) s b
 
 ------------------------------------------------------------------------
 -- Given function for testing propagateConstants...

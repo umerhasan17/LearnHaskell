@@ -196,7 +196,7 @@ inferPolyType' (App f e) env (v : vs)
     (su, tb')     = checkUnification msu tb
     s             = combineSubs 
 
-checkUnification :: Maybe Sub -> Type -> (Sub, Type)
+checkUnification :: Maybe Sub -> Type -> (Sub, Type)  
 checkUnification (Just s) t
   = (s, applySub s t)
 checkUnification _ _
