@@ -116,15 +116,43 @@ sub v c e
       = Phi (sub' e) (sub' e')
 
 -- Use (by uncommenting) any of the following, as you see fit...
--- type Worklist = [(Id, Int)]
+type Worklist = [(Id, Int)]
 -- scan :: Id -> Int -> Block -> (Worklist, Block)
 -- scan :: (Exp -> Exp) -> Block -> (Exp -> Exp, Block)
  
 propagateConstants :: Block -> Block
 -- Pre: the block is in SSA form
-propagateConstants 
-  = undefined
-
+propagateConstants b
+  = prop (scan "" 0 b) 
+  where
+    prop ([], b)
+      = b
+    prop ((v, c) : wl, b)
+      = prop (wl ++ wl', b')
+      where
+        (wl', b') = scan v c b
+ 
+scan :: Id -> Int -> Block -> (Worklist, Block)
+scan v c b
+  = foldr scan' ([],[]) b
+  where
+    -- (scan' sn-2 (scan sn-1 (scan sn)))
+    scan' (Assign "$return" e) (wl, b)
+      = (wl, Assign "$return" (sub v c e) : b)
+    scan' (Assign v e) (wl, b)
+      = scan'' (sub v c e)
+      where
+        scan'' (Const c') = ((v, c') : wl, b)
+        scan'' e'         = (wl, (Assign v e') : b)
+    scan' (If p q r) (wl, b)
+      = (wl ++ wl' ++ wl'', If (sub v c p) q' r' : b)
+      where
+        (wl', q')  = scan v c q
+        (wl'', r') = scan v c r
+    scan' (DoWhile db p) (wl, b)
+      = (wl ++ wl', DoWhile db' (sub v c p) : b)
+      where
+        (wl', db') = scan v c db
 ------------------------------------------------------------------------
 -- Given functions for testing unPhi...
 
