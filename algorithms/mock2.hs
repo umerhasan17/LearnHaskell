@@ -23,7 +23,12 @@ fib'' n
             | otherwise = (k ** 2) * (phi 1)
             where
                 k = phi (n `div` 2)
-
+    
 -- mkStdGen :: Int → StdGen
+-- creates a seed value given an integer
+
 -- random :: Random a ⇒ StdGen → (a, StdGen)
+-- generates a random value along with a new stdgen (uses default range determined by type)
+
 -- randomR :: Random a ⇒ (a, a) → StdGen → (a, StdGen)
+-- generates a number between low high range given and returns number with new stdgen
