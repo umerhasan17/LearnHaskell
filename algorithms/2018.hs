@@ -52,7 +52,6 @@ findDiffering as bs
                 righta = drop (mid+1) as
                 rightb = drop (mid+1) bs
 
-
 findDifferingN:: [Int] -> [Int] -> Int
 findDifferingN as bs
     | length diff == 0 = -1
@@ -90,3 +89,21 @@ lpsubseq s = table ! (0, l-1)
 -- (3,0),(3,1),(3,2),(3,3),(3,4),(3,5) -
 -- (4,0),(4,1),(4,2),(4,3),(4,4),(4,5) -
 -- (5,0),(5,1),(5,2),(5,3),(5,4),(5,5) -
+
+kthLargest:: Int -> [Int] -> Int
+kthLargest k [] = undefined
+kthLargest k xs@(x: xs') 
+    | l == k    = minimum xs
+    | same      = kthLargest k xs'
+    | lr < k    = kthLargest (k - lr) left 
+    | lr == k   = minimum right
+    | lr > k    = kthLargest k (tail right) 
+    | otherwise = undefined
+    where 
+        l    = length xs
+        lr   = length right
+        (left, right) = splitByHead xs
+        same = (length left) == (length xs)
+
+splitByHead []        = ([], [])
+splitByHead xs@(x: _) = (filter (<x) xs, filter (>= x) xs) 
