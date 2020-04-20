@@ -107,3 +107,14 @@ kthLargest k xs@(x: xs')
 
 splitByHead []        = ([], [])
 splitByHead xs@(x: _) = (filter (<x) xs, filter (>= x) xs) 
+
+asubseq:: [Int] -> [Int] -> Bool
+asubseq [] _ = True
+asubseq _ [] = False
+asubseq (a:as) (b: bs)
+    | a == b    = checkTail as bs || r
+    | otherwise = r
+    where
+        r = asubseq (a:as) bs
+        checkTail:: [Int] -> [Int] -> Bool
+        checkTail as bs = as == (take (length as) bs)
