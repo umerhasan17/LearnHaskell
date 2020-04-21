@@ -35,17 +35,7 @@ fib'' n
 -- randomR :: Random a ⇒ (a, a) → StdGen → (a, StdGen)
 -- generates a number between low high range given and returns number with new stdgen
 
--- sqrt5:: Double
--- sqrt5 = sqrt5' (mkStdGen 42) 0 0
---     where
---         -- stores below, total
---         sqrt5' :: StdGen -> Int -> Int -> Double
---         sqrt5' s m n
---             | n == 100000   = 3 * (fromIntegral m / fromIntegral  n)
---             | (r ** 2) <= 5.0 = sqrt5' s' (m+1) (n+1) 
---             | otherwise     = sqrt5' s' m (n+1)
---             where
---                 (r, s') = randomR (0 3) s
+
 
 root2 :: Double
 root2 = loop (mkStdGen 42) 0 0
@@ -59,3 +49,29 @@ root2 = loop (mkStdGen 42) 0 0
                 (x,seed') = randomR (0, 2) seed
                 inside :: Double -> Bool
                 inside x = x * x <= 2
+
+
+root5 :: Double
+root5 = loop (mkStdGen 42) 0 0
+    where
+        loop seed m n
+            | n == 100000 = 3 * m / fromIntegral n
+            | otherwise   = loop seed' m' n'
+            where 
+                n' = n+1
+                m' = if inside x then m + 1 else m
+                (x,seed') = randomR (0, 3) seed
+                inside :: Double -> Bool
+                inside x = x * x <= 5
+
+sqrt5:: Double
+sqrt5 = sqrt5' (mkStdGen 42) 0 0
+    where
+        sqrt5' s m n
+            | n == 100000 = 3 * m / fromIntegral n
+            | otherwise   = sqrt5' s' m' (n+1)
+            where 
+                m' = if inside x then m + 1 else m
+                (x,s') = randomR (0, 3) s
+                inside :: Double -> Bool
+                inside x = x * x <= 5
