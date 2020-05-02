@@ -1,4 +1,6 @@
 import Data.Array
+import Data.List
+import Data.Ord
 
 -- Question 1a
 
@@ -25,68 +27,59 @@ dist (x: xs) (y: ys)
 -- Question 1b
 
 tabulate2d:: (Num i, Enum i, Ix i) => (i, i) -> ((i, i) -> a) -> Array (i, i) a
-tabulate2d (m, n) f = array ((0, 0), (n, m)) [((x, y), (f (x, y))) | x <- range(0, m), y <- range(0, n)]
+tabulate2d (m, n) f = array ((0, 0), (m, n)) [((x, y), (f (x, y))) | x <- range(0, m), y <- range(0, n)]
 
 tabulate:: (Enum i, Ix i) => (i, i) -> (i -> a) -> Array i a
 tabulate (m, n) f = array (m, n) [(i, f i) | i <- range(m, n)]
 
 dist':: String -> String -> Int
 dist' xs ys
-    -- = table
-    = table ! (length xs, length ys)
+    = table ! (m, n)
     where
-        table = tabulate2d (length xs, length ys) mdist
+        m = length xs
+        n = length ys
+        table = tabulate2d (m+1, n+1) mdist
         mdist:: (Int, Int) -> Int
         mdist (0, 0)  = 0
         mdist (0, x) = x
         mdist (x, 0) = x
         mdist (x, y) 
-            | sameChar  = table ! (x-1, y-1)
-            | otherwise = 1 + minimum options
+            = minimum [
+                (table ! (x-1, y)) + 1,
+                (table ! (x, y-1)) + 1,
+                (table ! (x-1, y-1)) + if sameChar then 0 else 1
+            ]
             where
                 sameChar = (xs !! (x-1)) == (ys !! (y-1))
-                options = [table ! (x-1, y-1), table ! (x, y-1), table ! (x-1, y)]
 
---   dist [] []
---     = 0
--- dist [] xs
---     = length xs
--- dist xs []
---     = length xs
--- dist (x: xs) (y: ys)
---     | x == y    = dist xs ys
---     | otherwise = 1 + minimum options
---     where
---         options = [op1, op2, op3]
---         op1 = dist xs (y: ys)
---         op2 = dist (x: xs) ys
---         op3 = dist xs ys
+dists:: String -> String -> [String]
+dists [] []
+    = []
+dists [] xs
+    = tail (inits xs)
+    -- = [take i xs | i <- [0..length xs]]
+dists xs []
+    = tail (tails xs)
+    -- = [take i xs | i <- [length xs, length xs - 1.. 0]]
+dists xs@(x: xs') ys@(y: ys')
+    -- = op3
+    = minimums [op1, op2, op3]
+    where
+        op1 = xs' : dists xs' ys
+        op2 = (dists xs ys') ++ [ys]
+        -- op2 = map (y:) (dists xs ys')
+        op3 = if x == y then map (x:) (dists xs' ys') else (map (y:) (xs':dists xs' ys'))
+        minimums :: [[String]] -> [String]
+        minimums xs
+            = minimumBy (comparing length) xs
 
---             | index == 0  = 0
---             | index < length xs          = index
---             | index `mod` (length xs+1) == 0 = index - (xIndex * length xs)
---             | charsEqual                 = op3
---             | otherwise                  = 1 + minimum options
---             where
---                 (xIndex, yIndex) = divMod index (length xs)
---                 charsEqual = xIndex > 0 && yIndex > 0 && xs !! (xIndex-1) == ys !! (yIndex-1)
---                 options = [op1, op2, op3]
---                 -- left most column case already accounted for
---                 op1 = table ! (index - 1) 
---                 op2 = table ! (index - length xs)
---                 op3 = table ! (index - (length xs + 1) - 1)
+        
 
-        -- mdist [] []
-        --     = 0
-        -- mdist [] xs
-        --     = length xs
-        -- mdist xs []
-        --     = length xs
-        -- mdist (x: xs) (y: ys)
-        --     | x == y    = table ! length xs * (length ys + 1)
-        --     | otherwise = 1 + minimum options
-        --     where
-        --         options = [op1, op2, op3]
-        --         op1 = table ! length xs * (length (y: ys) + 1)
-        --         op2 = table ! length (x: xs) * (length ys + 1)
-        --         op3 = table length xs * (length ys + 1)
+        minimums' [xs] = xs
+        minimums' (xs:xss)
+            | length xs < length ys = xs
+            | otherwise             = ys
+            where
+                ys = minimums' xss
+            -- hello tree --> h     ello tree
+            -- hello -> [dists ello tree]
