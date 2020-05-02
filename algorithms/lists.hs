@@ -1,3 +1,5 @@
+{-# LANGUAGE InstanceSigs #-}
+
 class List list where
     fromList:: [a] -> list a
 
@@ -49,11 +51,11 @@ instance List [] where
 newtype DList a = DList ([a] -> [a])
 
 instance List DList where
-    -- fromList:: [a] -> DList a
+    fromList:: [a] -> DList a
     fromList xs = DList (xs Prelude.++)
-    -- toList:: DList a -> [a]
+    toList:: DList a -> [a]
     toList (DList fxs) = fxs []
-    -- (++):: DList a -> DList a -> DList a
+    (++):: DList a -> DList a -> DList a
     (DList fxs) ++ (DList fys) = DList (fxs . fys)
 
 
