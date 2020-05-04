@@ -92,3 +92,16 @@ instance List RAList where
             insert' elem (RAList (x:xs)) size
                 | Prelude.length (ttList x) < size =  (RAList ((insertT elem x) : xs))
                 | otherwise                        =  insert' elem (RAList xs) (size*2)  
+
+
+data TreeTip a = Tip | Leaf a | Fork (TreeTip a) (TreeTip a)
+
+instance List TreeTip where
+    fromList:: [a] -> TreeTip a
+    fromList [] = Tip
+    fromList (x:xs) = Fork (Leaf x) (fromList xs)
+
+    toList:: TreeTip a -> [a]
+    toList Tip = []
+    toList Leaf x = [x]
+    toList Fork x y = toList x ++ toList y

@@ -8,7 +8,7 @@ pushRight:: a -> Deque a -> Deque a
 pushRight y (Deque xs ys) = Deque xs (y:ys)
 
 popLeft:: Deque a -> (a, Deque a)
-popLeft d@(Deque [] ys)       = popLeft (reorganise d)
+popLeft d@(Deque [] ys)     = popLeft (reorganise d)
 popLeft (Deque (x: xs) ys)  = (x, Deque xs ys)
 
 popRight:: Deque a -> (a, Deque a)
