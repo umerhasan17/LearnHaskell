@@ -1,5 +1,4 @@
-data Instr = Define String 
-            | Mov Operand Operand
+data Instr =  Mov Operand Operand
             | Add Operand Operand
             | Mul Operand Operand
 
@@ -40,3 +39,16 @@ transStat:: Stat -> [Register] -> [Instr]
 transStat (Assign l e) r@(dst:next:rest)
     = (transLhs l r) ++ (transExp e (next:rest)) ++ 
     [Mov (Reg next) (Reg dst)] 
+
+-- example exp: 
+-- Assign (Array "A" (Num 12)) (Plus (Ref (Var "i")) (Ref (Array "A") (Num 12)))
+
+{-|
+
+2c Induction variables change by are incremented by a loop invariant on each iteration. 
+We know that if we check the first access and the last access and they are both valid, then all other accesses will also be valid. 
+Therefore, we check the first access given number of iterations 0. We check the last access given the number of iterations (any amount n). 
+
+
+
+-}
